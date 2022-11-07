@@ -7,6 +7,8 @@ import { Product } from "../entities/Product";
 export const getProducts = async (req:Request,res:Response) => {
      //const productos= await Product.find();
      //return res.json(productos);
+
+     //https://www.youtube.com/watch?v=aXP3s7kyRBg&ab_channel=LaughingTechnologies%28OkTests.com%29
     try {
 
         const  pageAsNumber : any = req.query.page;
