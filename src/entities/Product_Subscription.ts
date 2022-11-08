@@ -11,8 +11,8 @@ export class Product_Subscription extends BaseEntity {
     @Column('uuid')
     subscriber_id:string;
 
-    @Column('uuid')
-    product_id:string;
+    // @Column('uuid')
+    // product_id:string;
 
     @Column()
     subscription_start_date:Date;
@@ -40,16 +40,17 @@ export class Product_Subscription extends BaseEntity {
 
     //-------------------------------------RELACION PRODUCTO / PRODUCT-SUBSCRIPTION----------------------------------------
    //Un productSubscription va a contener un producto
-    @ManyToOne(type => Product, (p) => p.Product_Subscription)
-    Product: Product;
+    @ManyToOne(() => Product, (product) => product.product_Subscriptions)
+    @JoinColumn({name:'product_id'})
+    product: Product;
 
-    //-------------------------------------RELACION SUBSCRIBER / PRODUCT-SUBSCRIPTION----------------------------------------
-   //Un productSubscription va a contener un producto
-   @ManyToOne(type => Subscriber, (p) => p.subscriber_id)
-   Subscriber: Subscriber;
+//     //-------------------------------------RELACION SUBSCRIBER / PRODUCT-SUBSCRIPTION----------------------------------------
+//    //Un productSubscription va a contener un producto
+//    @ManyToOne(type => Subscriber, (p) => p.subscriber_id)
+//    Subscriber: Subscriber;
 
-    //-------------------------------------RELACION PRODUCT-SUBSCRIPTION / PRODUCT-SCOPE----------------------------------------
-    @OneToOne(() => Product_Scope)
-    @JoinColumn()
-    Product_Scope: Product_Scope
+//     //-------------------------------------RELACION PRODUCT-SUBSCRIPTION / PRODUCT-SCOPE----------------------------------------
+//     @OneToOne(() => Product_Scope)
+//     @JoinColumn()
+//     Product_Scope: Product_Scope
 }

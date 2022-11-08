@@ -30,9 +30,9 @@ export class Subscriber extends BaseEntity {
     @Column({nullable: true})
     modification_user: string;
 
-     //-------------------------------------RELACION SUBSCRIBER / PRODUCT-SUBSCRIPTION----------------------------------------
-    //Un producto va a aparecer en muchos ProducSubscription
-    @OneToMany(type => Product_Subscription, (ps) => ps.subscriber_id)
-    Product_Subscription: Product_Subscription[];
+    //  //-------------------------------------RELACION SUBSCRIBER / PRODUCT-SUBSCRIPTION----------------------------------------
+    // //Un producto va a aparecer en muchos ProducSubscription
+    // @OneToMany(type => Product_Subscription, (ps) => ps.subscriber_id)
+    // Product_Subscription: Product_Subscription[];
 
 }

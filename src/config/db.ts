@@ -23,11 +23,12 @@ export const AppDataSource = new DataSource({
     username: process.env.POSTGRESQL_USER,
     password: process.env.POSTGRESQL_PASS,
     database: process.env.POSTGRESQL_NAME,
+    schema:"comm_prod",
     synchronize: false,
-    logging: false,
+    logging: true,
     entities: [Product,Subscriber,Product_Type,Product_Subscription,Product_Scope]
 
     
 });
 
-console.log(AppDataSource.options)
+//console.log(AppDataSource.options)

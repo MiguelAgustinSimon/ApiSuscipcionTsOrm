@@ -36,9 +36,9 @@ export class Product_Scope extends BaseEntity {
     @Column({nullable: true})
     modification_user: string;
 
-    // -------------------------------------RELACION PRODUCTO / PRODUCT-SCOPE----------------------------------------
-    // Un Product_Scope va a contener un producto
-    @ManyToOne(type => Product, (ps) => ps.product_id)
-    Product: Product;
+    // // -------------------------------------RELACION PRODUCTO / PRODUCT-SCOPE----------------------------------------
+    // // Un Product_Scope va a contener un producto
+    // @ManyToOne(type => Product, (ps) => ps.product_id)
+    // Product: Product;
 
 }

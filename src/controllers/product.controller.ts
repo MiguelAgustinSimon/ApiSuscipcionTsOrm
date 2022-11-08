@@ -2,17 +2,26 @@ import { Request,Response } from "express";
 const {logger}=require("../entities/Logger");
 
 import { Product } from "../entities/Product";
+import { Subscriber } from "../entities/Subscriber";
+import { Product_Type } from "../entities/Product_Type";
+import { Product_Subscription } from "../entities/Product_Subscription";
+import { Product_Scope } from "../entities/Product_Scope";
+
+const parseJwt=async (token:string)=>{
+    return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+}
 
 // ---------------------------------------------------- RUTAS GET--------------------------------------------------------------
 export const getProducts = async (req:Request,res:Response) => {
-     //const productos= await Product.find();
-     //return res.json(productos);
+    //  const productos= await Product.find();
+    //  return res.json(productos);
 
      //https://www.youtube.com/watch?v=aXP3s7kyRBg&ab_channel=LaughingTechnologies%28OkTests.com%29
+     //FIND ORM: https://desarrolloweb.com/articulos/metodo-find-repositorios-typeorm
     try {
-
         const  pageAsNumber : any = req.query.page;
         const sizeAsNumber:any=req.query.size;
+        const unProductID:any=req.query.product_id;
         let page:number=0;
         let size:number=10;
 
@@ -26,10 +35,15 @@ export const getProducts = async (req:Request,res:Response) => {
         let pageSize=page*size;
 
         let [productosFiltrados, count] = await Product.findAndCount({
-            //Faltaria incluir modeloProductoSuscripcion
+            where: { 
+                product_id: unProductID
+              },
+            relations: {
+                product_Subscriptions: true,
+            },
             take:size,
-            skip:pageSize,
-            
+            skip:pageSize
+          
         });
         let contador:any=count;
         res.header('X-Total-Count', contador);

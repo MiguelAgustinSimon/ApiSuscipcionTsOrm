@@ -16,7 +16,7 @@ class Server {
         if (process.env.STAGE == "PROD") {
             this.port = process.env.PORT || 8000;
         } else {
-            this.port = 3000;
+            this.port = 3002;
         }
     
         //Connect to database
@@ -69,7 +69,7 @@ class Server {
 
     routes() {
         //this.app.use("/api", require("../routes/product.routes"));
-        this.app.use(productRoutes);
+        this.app.use('/api',productRoutes);
     }
 
     listen() {

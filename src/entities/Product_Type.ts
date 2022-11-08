@@ -24,8 +24,8 @@ export class Product_Type extends BaseEntity {
     @Column({nullable: true})
     modification_user: string;
 
-     //-------------------------------------RELACION PRODUCTO / PRODUCT-TYPE----------------------------------------
-    //Un product_type va a aparecer en muchos Product
-    @OneToMany(type => Product, (p) => p.product_type_id)
-    Product: Product[];
+    //  //-------------------------------------RELACION PRODUCTO / PRODUCT-TYPE----------------------------------------
+    // //Un product_type va a aparecer en muchos Product
+    // @OneToMany(type => Product, (p) => p.product_type_id)
+    // Product: Product[];
 }

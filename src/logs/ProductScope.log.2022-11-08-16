@@ -1,0 +1,14 @@
+[2022-11-08T16:03:57.178] [INFO] default - ProductScope: getProducts ok
+[2022-11-08T16:06:56.353] [INFO] default - ProductScope: getProducts ok
+[2022-11-08T16:07:09.388] [INFO] default - ProductScope: getProducts ok
+[2022-11-08T16:20:24.353] [ERROR] default - ProductScope: getProducts error: TypeError: Cannot read properties of undefined (reading 'joinColumns')
+[2022-11-08T16:22:15.183] [ERROR] default - ProductScope: getProducts error: TypeError: Cannot read properties of undefined (reading 'joinColumns')
+[2022-11-08T16:27:07.163] [ERROR] default - ProductScope: getProducts error: TypeError: Cannot read properties of undefined (reading 'joinColumns')
+[2022-11-08T16:27:21.410] [ERROR] default - ProductScope: getProducts error: TypeError: Cannot read properties of undefined (reading 'joinColumns')
+[2022-11-08T16:30:35.885] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product__Product_product_Subscription.productProductId does not exist
+[2022-11-08T16:38:32.967] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product__Product_product_Subscriptions.productProductId does not exist
+[2022-11-08T16:44:31.642] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product.product_id does not exist
+[2022-11-08T16:45:10.069] [INFO] default - ProductScope: getProducts ok
+[2022-11-08T16:53:47.901] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product_Subscription.productProductId does not exist
+[2022-11-08T16:58:59.513] [INFO] default - ProductScope: getProducts ok
+[2022-11-08T16:59:52.756] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product_Subscription.productProductId does not exist

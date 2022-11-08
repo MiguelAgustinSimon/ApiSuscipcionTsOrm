@@ -1,0 +1,4 @@
+[2022-11-08T15:48:18.902] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product.product_id does not exist
+[2022-11-08T15:50:39.435] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product.product_id does not exist
+[2022-11-08T15:57:26.129] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product.productTypeProductTypeId does not exist
+[2022-11-08T15:58:57.045] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product.productTypeProductTypeId does not exist
