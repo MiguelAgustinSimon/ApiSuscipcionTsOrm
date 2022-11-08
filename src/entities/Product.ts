@@ -1,9 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn,UpdateDateColumn, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn,UpdateDateColumn, BaseEntity, OneToOne, OneToMany, JoinColumn, ManyToOne } from "typeorm";
+import { Product_Subscription } from "../entities/Product_Subscription";
+import { Product_Scope } from "./Product_Scope";
+import { Product_Type } from "./Product_Type";
 
-@Entity()
+@Entity('product')
 export class Product extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    product_id: string;
 
     @Column()
     product_code:string;
@@ -32,4 +35,20 @@ export class Product extends BaseEntity {
     @Column({nullable: true})
     modification_user: string;
 
+    //-------------------------------------RELACION PRODUCTO / PRODUCT-SUBSCRIPTION----------------------------------------
+    //Un producto va a aparecer en muchos ProducSubscription
+    @OneToMany(type => Product_Subscription, (ps) => ps.product_id)
+    Product_Subscription: Product_Subscription[];
+
+    //-------------------------------------RELACION PRODUCTO / PRODUCT-SCOPE----------------------------------------
+    //Un producto va a aparecer en muchos Product_Scope
+     @OneToMany(type => Product_Scope, (ps) => ps.product_id)
+     Product_Scope: Product_Scope[];
+    
+     //-------------------------------------RELACION PRODUCTO / PRODUCT-TYPE----------------------------------------
+     //Un producto va a tener un Product_Type
+    @ManyToOne(type => Product_Type, (p) => p.product_type_id)
+    Product_Type: Product_Type;
 }
+
+

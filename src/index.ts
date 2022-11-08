@@ -1,13 +1,12 @@
 import "reflect-metadata";
 import Server from './entities/Server';
 import dotenv from 'dotenv';
+dotenv.config();
 
 async function main() {
     try {
-        dotenv.config();
         const server = new Server();
         server.listen();
-
     } catch (error) {
         console.log(`No se ha podido conectar ${error}`);
     }
