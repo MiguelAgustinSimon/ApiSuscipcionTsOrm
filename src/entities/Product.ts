@@ -36,6 +36,7 @@ export class Product extends BaseEntity {
     modification_user: string;
 
     //-------------------------------------RELACION PRODUCTO / PRODUCT-SUBSCRIPTION----------------------------------------
+    //Relacion 1-M: https://www.youtube.com/watch?v=tEf-ch1OknA&ab_channel=nicobytes
     //Un producto va a aparecer en muchos ProducSubscription
     @OneToMany(()=> Product_Subscription, (ps) => ps.product)
     product_Subscriptions: Product_Subscription[];
