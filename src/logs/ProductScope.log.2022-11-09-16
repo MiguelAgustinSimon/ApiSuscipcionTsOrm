@@ -1,0 +1,6 @@
+[2022-11-09T16:11:17.980] [ERROR] default - ProductScope: getBySuscriptionProductIdCommProduct error: Property "product_type_id" was not found in "Product". Make sure your query is correct.
+[2022-11-09T16:11:40.445] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-09T16:13:57.626] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-09T16:19:18.938] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-09T16:20:22.040] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-09T16:26:10.523] [INFO] default - ProductScope: getProductCommProduct ok

@@ -203,8 +203,6 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
 //Todas las suscripciones por Producto
 const getBySuscriptionProductIdCommProduct= async (req:Request,res:Response) => {
     const {product_id}= req.params;
-
-    let is_active= req.query.is_active;
     let where:any={};
     let pageAsNumber:any=req.query.page;
     let sizeAsNumber:any=req.query.size;
@@ -224,7 +222,6 @@ const getBySuscriptionProductIdCommProduct= async (req:Request,res:Response) => 
     }
 
     //Verificar si existe este producto..
-    console.log(`producto ${product_id}`);
     const _product = await Product.findOne(
     {
         
@@ -241,10 +238,6 @@ const getBySuscriptionProductIdCommProduct= async (req:Request,res:Response) => 
 
     if(!Number.isNaN(sizeAsNumber) && sizeAsNumber>0 && sizeAsNumber<10){
         size=sizeAsNumber;
-    }
-
-    if(is_active){
-        where.is_active= {is_active}
     }
 
     const [count]:any= await Product.findAndCount({
@@ -283,6 +276,7 @@ const getBySuscriptionProductIdCommProduct= async (req:Request,res:Response) => 
    });
 }
 
+//Traer producto especifico por codProd ERP
 const getProductCommProduct= async (req:Request,res:Response) => {
     const {product_code}= req.params;
     if(!product_code){
@@ -311,6 +305,90 @@ const getProductCommProduct= async (req:Request,res:Response) => {
         logger.error(`ProductScope: getProductCommProduct error: ${error.message}`);
         res.json({error:error.message});
    });
+}
+
+//Lista de Productos por tipo 
+const getAllProductsCommProduct= async (req:Request,res:Response) => {
+    let pageAsNumber:any=req.query.page;
+    let sizeAsNumber:any=req.query.size;
+    pageAsNumber=Number.parseInt(pageAsNumber);
+    sizeAsNumber=Number.parseInt(sizeAsNumber);
+    let page=0;
+    let size=10;
+
+    let where:any={};
+
+    let product_type_id= (req.query.product_type_id)?.toString();
+    let _product_type_code:any= req.query.product_type_code;
+    let apply_eol:any= req.query.apply_eol;
+    let apply_ius:any= req.query.apply_ius;
+
+    if(!Number.isNaN(pageAsNumber)&& pageAsNumber>0){
+        page=pageAsNumber;
+    }
+
+    if(!Number.isNaN(sizeAsNumber) && sizeAsNumber>0 && sizeAsNumber<10){
+        size=sizeAsNumber;
+    }
+
+    if(_product_type_code)
+    {
+        const ptc = await Product_Type.findOne({
+            where:{product_type_code:_product_type_code}
+        })
+        if(ptc){
+            product_type_id=ptc.product_type_id
+        }
+    }
+    //https://www.tutorialspoint.com/typeorm/typeorm_tutorial.pdf
+    if(product_type_id){
+
+            where.product_type_id= {$eq:product_type_id}
+        
+    }
+    if(apply_eol){
+        where.apply_eol= {$eq:apply_eol}
+    }
+    if(apply_ius){
+        where.apply_ius= {$eq:apply_ius}
+    }
+
+    console.log(where);
+    const { count }:any = await Product.findAndCount({
+        where,
+        take:size,
+        skip:page*size,
+    })
+    res.header('X-Total-Count', count);
+
+//    await Product.find({ 
+//         where,
+//         take:size,
+//         skip:page*size,
+//         relations: {
+//             product_Scopes:true,
+//             product_type:true
+//         }, 
+//         order: {
+//             product_name: 'ASC',
+//             product_code: 'ASC'
+//         }
+//    })
+//    .then( (data)=>{
+//         if (data.length===0) 
+//         { 
+//             logger.warn(`ProductScope: getAllProductsCommProduct: Datos no encontrados`);
+//             return res.status(404).json({message: "Datos no encontrados."})
+//         }
+//         else{
+//             logger.info(`ProductScope: getAllProductsCommProduct ok`);
+//             return res.status(200).json(data);
+//         }
+//    })
+//   .catch( (error)=>{
+//         logger.error(`ProductScope: getAllProductsCommProduct error: ${error.message}`);
+//         res.json({error:error.message});
+//    });
 }
 
 
@@ -366,7 +444,7 @@ module.exports = {
     getSubscriberSuscriptionCommProduct,
     getBySuscriptionProductIdCommProduct,
     getProductCommProduct,
-    // getAllProductsCommProduct,
+    getAllProductsCommProduct,
     // addSubscriptionCommProduct,
     createProductCommProduct,
     // createProductScopeCommProduct,
