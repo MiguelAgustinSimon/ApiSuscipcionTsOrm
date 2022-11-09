@@ -283,6 +283,36 @@ const getBySuscriptionProductIdCommProduct= async (req:Request,res:Response) => 
    });
 }
 
+const getProductCommProduct= async (req:Request,res:Response) => {
+    const {product_code}= req.params;
+    if(!product_code){
+        logger.warn(`getProductCommProduct: No se ingreso product_code`);
+        return res.status(400).json({message: "No se ingreso product_code."})
+    }
+
+    await Product.findOne({
+        relations: {
+            product_Scopes:true,
+            product_type:true
+        },
+        where: {product_code} 
+      })
+   .then( (data)=>{
+       if(data){
+            logger.info(`ProductScope: getProductCommProduct ok`);
+            return res.json(data);
+       }
+       else{
+            logger.warn(`ProductScope: getProductCommProduct: Datos no encontrados`);
+            return res.status(404).json({message: "Datos no encontrados."})
+       }
+   })
+  .catch( (error)=>{
+        logger.error(`ProductScope: getProductCommProduct error: ${error.message}`);
+        res.json({error:error.message});
+   });
+}
+
 
 // ---------------------------------------------------- RUTAS POST--------------------------------------------------------------
 //Dar de alta un Producto nuevo
@@ -335,7 +365,7 @@ module.exports = {
     getProducts,
     getSubscriberSuscriptionCommProduct,
     getBySuscriptionProductIdCommProduct,
-    // getProductCommProduct,
+    getProductCommProduct,
     // getAllProductsCommProduct,
     // addSubscriptionCommProduct,
     createProductCommProduct,
