@@ -8,6 +8,7 @@ import { Product_Type } from "../entities/Product_Type";
 import { Product_Subscription } from "../entities/Product_Subscription";
 import { Product_Scope } from "../entities/Product_Scope";
 var moment = require('moment'); 
+
 const parseJwt=async (token:string)=>{
     return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
 }
@@ -245,7 +246,7 @@ const getBySuscriptionProductIdCommProduct= async (req:Request,res:Response) => 
         skip:page*size,
         where
     })
-    res.header('X-Total-Count', count);
+    res.header('X-Total-Count', count.length);
 
    await Product.find({ 
         take:size,
@@ -342,53 +343,51 @@ const getAllProductsCommProduct= async (req:Request,res:Response) => {
     }
     //https://www.tutorialspoint.com/typeorm/typeorm_tutorial.pdf
     if(product_type_id){
-
-            where.product_type_id= {$eq:product_type_id}
-        
+        where.product_type_id= product_type_id
     }
     if(apply_eol){
-        where.apply_eol= {$eq:apply_eol}
+        where.apply_eol= apply_eol
     }
     if(apply_ius){
-        where.apply_ius= {$eq:apply_ius}
+        where.apply_ius= apply_ius
     }
-
-    console.log(where);
-    const { count }:any = await Product.findAndCount({
+    let pageSize=(page*size);
+    let [count]:any = await Product.findAndCount({
+        where,
+        take:size,
+        skip:pageSize
+    });
+    let contador:any=count.length;
+    res.header('X-Total-Count', contador);
+   
+   await Product.find({ 
         where,
         take:size,
         skip:page*size,
-    })
-    res.header('X-Total-Count', count);
-
-//    await Product.find({ 
-//         where,
-//         take:size,
-//         skip:page*size,
-//         relations: {
-//             product_Scopes:true,
-//             product_type:true
-//         }, 
-//         order: {
-//             product_name: 'ASC',
-//             product_code: 'ASC'
-//         }
-//    })
-//    .then( (data)=>{
-//         if (data.length===0) 
-//         { 
-//             logger.warn(`ProductScope: getAllProductsCommProduct: Datos no encontrados`);
-//             return res.status(404).json({message: "Datos no encontrados."})
-//         }
-//         else{
-//             logger.info(`ProductScope: getAllProductsCommProduct ok`);
-//             return res.status(200).json(data);
-//         }
-//    })
-//   .catch( (error)=>{
-//         logger.error(`ProductScope: getAllProductsCommProduct error: ${error.message}`);
-//         res.json({error:error.message});
-//    });
+        relations: {
+            product_Scopes:true,
+            product_type:true
+        }, 
+        order: {
+            product_name: 'ASC',
+            product_code: 'ASC'
+        }
+   })
+   .then( (data)=>{
+        if (data.length===0) 
+        { 
+            logger.warn(`ProductScope: getAllProductsCommProduct: Datos no encontrados`);
+            return res.status(404).json({message: "Datos no encontrados."})
+        }
+        else{
+            logger.info(`ProductScope: getAllProductsCommProduct ok`);
+            return res.status(200).json(data);
+        }
+   })
+  .catch( (error)=>{
+        logger.error(`ProductScope: getAllProductsCommProduct error: ${error.message}`);
+        res.json({error:error.message});
+   });
 }
 
 
