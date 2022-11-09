@@ -41,15 +41,16 @@ export class Product extends BaseEntity {
     @OneToMany(()=> Product_Subscription, (ps) => ps.product)
     product_Subscriptions: Product_Subscription[];
 
-    // //-------------------------------------RELACION PRODUCTO / PRODUCT-SCOPE----------------------------------------
-    // //Un producto va a aparecer en muchos Product_Scope
-    //  @OneToMany(type => Product_Scope, (ps) => ps.product_id)
-    //  Product_Scope: Product_Scope[];
+    //-------------------------------------RELACION PRODUCTO / PRODUCT-SCOPE----------------------------------------
+    //Un producto va a aparecer en muchos Product_Scope
+     @OneToMany(type => Product_Scope, (ps) => ps.product)
+     product_Scopes: Product_Scope[];
     
-    //  //-------------------------------------RELACION PRODUCTO / PRODUCT-TYPE----------------------------------------
-    //  //Un producto va a tener un Product_Type
-    // @ManyToOne(type => Product_Type, (p) => p.product_type_id)
-    // Product_Type: Product_Type;
+     //-------------------------------------RELACION PRODUCTO / PRODUCT-TYPE----------------------------------------
+     //Un producto va a tener un Product_Type
+    @ManyToOne(type => Product_Type, (p) => p.products)
+    @JoinColumn({name:'product_type_id'})
+    product_type: Product;
 }
 
 

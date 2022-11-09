@@ -1,0 +1,16 @@
+[2022-11-09T14:24:55.938] [ERROR] default - ProductScope: getProducts error: QueryFailedError: missing FROM-clause entry for table "product"
+[2022-11-09T14:29:44.036] [ERROR] default - ProductScope: getProducts error: QueryFailedError: missing FROM-clause entry for table "product"
+[2022-11-09T14:31:38.505] [INFO] default - ProductScope: getProducts ok
+[2022-11-09T14:32:08.339] [ERROR] default - ProductScope: getProducts error: QueryFailedError: missing FROM-clause entry for table "product"
+[2022-11-09T14:34:27.903] [ERROR] default - ProductScope: getProducts error: QueryFailedError: missing FROM-clause entry for table "product"
+[2022-11-09T14:35:25.831] [ERROR] default - ProductScope: getProducts error: QueryFailedError: missing FROM-clause entry for table "product"
+[2022-11-09T14:35:30.172] [ERROR] default - ProductScope: getProducts error: QueryFailedError: missing FROM-clause entry for table "product"
+[2022-11-09T14:35:34.664] [ERROR] default - ProductScope: getProducts error: QueryFailedError: missing FROM-clause entry for table "product"
+[2022-11-09T14:42:18.091] [INFO] default - ProductScope: getProducts ok
+[2022-11-09T14:42:40.032] [INFO] default - ProductScope: getProducts ok
+[2022-11-09T14:45:53.848] [INFO] default - ProductScope: getProducts ok
+[2022-11-09T14:45:59.691] [INFO] default - ProductScope: getProducts ok
+[2022-11-09T14:48:41.380] [INFO] default - ProductScope: getProducts ok
+[2022-11-09T14:50:21.934] [INFO] default - ProductScope: getProducts ok
+[2022-11-09T14:51:18.674] [ERROR] default - ProductScope: getProducts error: QueryFailedError: missing FROM-clause entry for table "product"
+[2022-11-09T14:51:39.348] [INFO] default - ProductScope: getProducts ok

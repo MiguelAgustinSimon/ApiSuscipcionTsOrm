@@ -1,15 +1,5 @@
-[2022-11-08T17:11:14.639] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product_Subscription.productProductId does not exist
-[2022-11-08T17:12:13.717] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product_Subscription.productProductId does not exist
-[2022-11-08T17:16:34.920] [INFO] default - ProductScope: getProducts ok
-[2022-11-08T17:31:32.957] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product__Product_product_Subscriptions.productProductId does not exist
-[2022-11-08T17:32:00.854] [INFO] default - ProductScope: getProducts ok
-[2022-11-08T17:32:35.956] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product__Product_product_Subscriptions.productProductId does not exist
-[2022-11-08T17:33:42.835] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product__Product_product_Subscriptions.productProductId does not exist
-[2022-11-08T17:34:05.118] [INFO] default - ProductScope: getProducts ok
-[2022-11-08T17:35:35.305] [INFO] default - ProductScope: getProducts ok
-[2022-11-08T17:35:48.919] [ERROR] default - ProductScope: getProducts error: QueryFailedError: column Product__Product_product_Subscriptions.productProductId does not exist
-[2022-11-08T17:51:30.098] [INFO] default - ProductScope: getProducts ok
-[2022-11-08T17:53:51.154] [INFO] default - ProductScope: getProducts ok
-[2022-11-08T17:53:57.552] [INFO] default - ProductScope: getProducts ok
-[2022-11-08T17:54:31.181] [INFO] default - ProductScope: getProducts ok
-[2022-11-08T17:57:36.064] [INFO] default - ProductScope: getProducts ok
+[2022-11-09T16:11:17.980] [ERROR] default - ProductScope: getBySuscriptionProductIdCommProduct error: Property "product_type_id" was not found in "Product". Make sure your query is correct.
+[2022-11-09T16:11:40.445] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-09T16:13:57.626] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-09T16:19:18.938] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-09T16:20:22.040] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
