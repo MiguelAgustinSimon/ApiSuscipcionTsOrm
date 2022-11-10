@@ -29,7 +29,7 @@ router.get("/getProductCommProduct/:product_code?",verificarToken, getProductCom
 router.get("/getAllProductsCommProduct",verificarToken, getAllProductsCommProduct);
 
 // //Rutas POST
-// router.post("/addSubscriptionCommProduct",verificarToken, addSubscriptionCommProduct);
+router.post("/addSubscriptionCommProduct",verificarToken, addSubscriptionCommProduct);
 // router.post("/createProductCommProduct",verificarToken, createProductCommProduct);
 // router.post("/createProductScopeCommProduct",verificarToken, createProductScopeCommProduct);
 

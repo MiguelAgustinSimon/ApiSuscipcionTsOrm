@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn,UpdateDateColumn, BaseEntity, ManyToOne, JoinColumn } from "typeorm";
 import { Product } from "./Product";
 
-@Entity('product_scope')
+@Entity('comm_prod.product_scope')
 export class Product_Scope extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     product_scope_id: string;

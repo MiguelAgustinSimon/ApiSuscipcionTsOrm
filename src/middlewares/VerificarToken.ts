@@ -1,4 +1,6 @@
 import { Request,Response,NextFunction } from 'express';
+
+
 import jwt from 'jsonwebtoken'
 //Authorization: Barer <token>
 require("dotenv").config({path:"./.env"});
@@ -11,7 +13,7 @@ export const verificarToken =(req:Request, res:Response, next:NextFunction) => {
         let bearerToken='';
         if(typeof bearerHeader !== 'undefined'){
           bearerToken = bearerHeader.split(" ")[1];
-          //req.token=bearerToken;
+          
         }else{
           res.sendStatus(403);
         }
@@ -19,7 +21,7 @@ export const verificarToken =(req:Request, res:Response, next:NextFunction) => {
      
       jwt.verify(bearerToken, process.env.PUBLIC_KEY!, (error) => {
         //req.token.expiresIn= '365d';
-
+        req.token=bearerToken;
         if(error){
           res.sendStatus(403);
         }else{

@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn,UpdateDateColumn, BaseEntity, OneToMany } from "typeorm";
 import { Product_Subscription } from "./Product_Subscription";
 
-@Entity('subscriber')
+@Entity('app_entity.subscriber')
 export class Subscriber extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     subscriber_id: string;

@@ -392,6 +392,114 @@ const getAllProductsCommProduct= async (req:Request,res:Response) => {
 
 
 // ---------------------------------------------------- RUTAS POST--------------------------------------------------------------
+//Alta de Producto-Suscripcion
+const addSubscriptionCommProduct = async (req:Request,res:Response) => { 
+    try{
+    //let fechaHoy= new Date().toISOString().slice(0, 10);    
+    let { 
+        subscriber_id,
+        product_id,
+        subscription_start_date,     
+        subscription_finish_date,
+        account_executive_ref_id,
+        creation_user
+      } = req.body;
+    
+    let req2:any=await parseJwt(req.token!); 
+
+    let fechaHoy = moment();  
+    var validaStartDate = moment(subscription_start_date);
+    var validaFinishDate = moment(subscription_finish_date);
+
+    if(!UUIDChecker(subscriber_id)){
+        logger.warn(`ProductScope: addSubscriptionCommProduct: Ingrese un UUID valido: ${subscriber_id}`);
+        return res.status(400).json({message: 'Ingrese un UUID valido'});
+    }
+    if(!UUIDChecker(product_id)){
+        logger.warn(`ProductScope: addSubscriptionCommProduct: Ingrese un UUID valido: ${product_id}`);
+        return res.status(400).json({message: 'Ingrese un UUID valido'});
+    }
+
+    //verifico si existe el suscriptor
+    const suscriptor = await Subscriber.find({where: {subscriber_id}});
+    //verifico si existe el producto
+    const producto = await Product.find({where: {product_id}});
+
+    if(!suscriptor){
+      logger.warn(`addSubscriptionCommProduct: Suscriptor no existente: ${suscriptor}`);
+      return res.status(404).json({message: "Suscriptor no existente"});
+    }
+
+    if(!product_id || !producto){
+        logger.warn(`addSubscriptionCommProduct: No se ingreso product_id`);
+        return res.status(400).json({message: "No se ingreso producto para el suscriptor o este es inexistente"})
+    }
+    if(!validaStartDate.isValid() ){//|| validaStartDate>=fechaHoy){ preguntar que hacemos con esto
+        logger.warn(`addSubscriptionCommProduct: Fecha de inicio de suscripcion invalida`);
+        return res.status(400).json({message: "Fecha de inicio de suscripcion invalida"})
+    }
+    if(!validaFinishDate.isValid()){
+        logger.warn(`addSubscriptionCommProduct: Fecha de finalizacion de suscripcion invalida`);
+        return res.status(400).json({message: "Fecha de finalizacion de suscripcion invalida"})
+    }
+    if(validaStartDate>validaFinishDate){
+        logger.warn(`addSubscriptionCommProduct: Fecha de inicio mayor a la fecha de fin`);
+        return res.status(400).json({message: "Fecha de inicio mayor a la fecha de fin"})
+    }
+
+    if(!account_executive_ref_id){
+        account_executive_ref_id=0;
+    }
+
+    //Verificamos si la relacion ya existe
+    const existeSuscripcion = await Product_Subscription.findOne({
+        where: {
+            subscriber_id: subscriber_id,
+            product_id: product_id,
+            is_active:true
+        }
+      });
+      
+      //Si ya existe devolvemos el resultado
+      if(existeSuscripcion){
+        logger.warn(`addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: ${existeSuscripcion}`);
+        return res.status(200).json({message: "Ya existe una suscripción para el producto y suscriptor informados."});
+      }
+
+      //que la fecha que ingresan no sea menor a la de hoy, ver: https://desarrolladores.me/2020/03/manipular-fechas-con-moment-js/
+      const ps=new Product_Subscription();
+        ps.subscriber_id=subscriber_id,
+        ps.product_id=product_id,   
+        ps.subscription_start_date=validaStartDate,
+        ps.subscription_finish_date=validaFinishDate,
+        ps.is_active=true,//true
+        ps.account_executive_ref_id=account_executive_ref_id,
+        ps.creation_date=fechaHoy,// yyyy-mm-dd
+        ps.creation_user=req2.idpData.email
+        await ps.save();
+        if(ps){
+            logger.info(`ProductScope: addSubscriptionCommProduct ok`);
+            return res.json({ok:true,mensaje:'Item creado',ps});
+        }
+        else{
+          logger.warn(`ProductScope: addSubscriptionCommProduct: El Item no pudo ser creado`);
+          return res.json({
+              ok:false,
+              message:'El Item no pudo ser creado'
+          })
+        } 
+    }
+    catch (error) {
+        logger.error(`ProductScope: addSubscriptionCommProduct: El Item no pudo ser creado ${error}`);
+        return res.status(400).json({
+            ok:false,
+            mensaje:error,
+            error:error
+        });
+    }  
+} // fin addSubscriptionCommProduct
+
+
 //Dar de alta un Producto nuevo
 const createProductCommProduct = async (req:Request,res:Response) => {
     try {
@@ -444,7 +552,7 @@ module.exports = {
     getBySuscriptionProductIdCommProduct,
     getProductCommProduct,
     getAllProductsCommProduct,
-    // addSubscriptionCommProduct,
+    addSubscriptionCommProduct,
     createProductCommProduct,
     // createProductScopeCommProduct,
     // disableSubscriptionCommProduct,

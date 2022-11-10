@@ -1,2 +1,11 @@
-[2022-11-09T19:00:22.271] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
-[2022-11-09T19:00:51.105] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-10T14:02:43.690] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: [object Object],[object Object],[object Object],[object Object]
+[2022-11-10T14:03:00.678] [WARN] default - addSubscriptionCommProduct: Fecha de inicio mayor a la fecha de fin
+[2022-11-10T14:09:18.233] [WARN] default - addSubscriptionCommProduct: Fecha de inicio mayor a la fecha de fin
+[2022-11-10T14:09:27.547] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: [object Object],[object Object],[object Object],[object Object]
+[2022-11-10T14:10:26.017] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: 
+[2022-11-10T14:11:16.255] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: 
+[2022-11-10T14:15:16.734] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: 
+[2022-11-10T14:16:51.565] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: [object Object]
+[2022-11-10T14:17:59.868] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: [object Object]
+[2022-11-10T14:22:30.708] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: [object Object]
+[2022-11-10T14:22:40.637] [INFO] default - ProductScope: addSubscriptionCommProduct ok

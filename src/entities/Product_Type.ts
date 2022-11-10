@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn,UpdateDateColumn, BaseEntity, OneToMany } from "typeorm";
 import { Product } from "./Product";
 
-@Entity('product_type')
+@Entity('comm_prod.product_type')
 export class Product_Type extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     product_type_id: string;

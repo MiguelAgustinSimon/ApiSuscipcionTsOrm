@@ -3,7 +3,7 @@ import { Product_Subscription } from "../entities/Product_Subscription";
 import { Product_Scope } from "./Product_Scope";
 import { Product_Type } from "./Product_Type";
 
-@Entity('product')
+@Entity('comm_prod.product')
 export class Product extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     product_id: string;

@@ -3,7 +3,7 @@ import { Product } from "./Product";
 import { Product_Scope } from "./Product_Scope";
 import { Subscriber } from "./Subscriber";
 
-@Entity('product_subscription')
+@Entity('comm_prod.product_subscription')
 export class Product_Subscription extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     product_subscription_id: string;
@@ -40,7 +40,7 @@ export class Product_Subscription extends BaseEntity {
 
     //-------------------------------------RELACION PRODUCTO / PRODUCT-SUBSCRIPTION----------------------------------------
    //Un productSubscription va a contener un producto
-    @ManyToOne(() => Product, (product) => product.product_Subscriptions)
+    @ManyToOne(() => Product, (p) => p.product_Subscriptions)
     @JoinColumn({name:'product_id'})
     product: Product;
 
