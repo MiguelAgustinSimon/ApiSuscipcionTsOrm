@@ -20,7 +20,9 @@ export class Product_Subscription extends BaseEntity {
     @Column()
     subscription_finish_date:Date;
 
-    @Column()
+    @Column({
+        default:true
+    })
     is_active:Boolean;
     
     @Column('uuid')

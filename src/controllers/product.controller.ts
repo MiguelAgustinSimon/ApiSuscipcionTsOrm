@@ -319,7 +319,7 @@ const getAllProductsCommProduct= async (req:Request,res:Response) => {
 
     let where:any={};
 
-    let product_type_id= (req.query.product_type_id)?.toString();
+    let product_type_id:any= (req.query.product_type_id)?.toString();
     let _product_type_code:any= req.query.product_type_code;
     let apply_eol:any= req.query.apply_eol;
     let apply_ius:any= req.query.apply_ius;
@@ -508,15 +508,40 @@ const createProductCommProduct = async (req:Request,res:Response) => {
         const { 
             product_code,
             product_name,     
-            product_type_id,
+            product_type_code,
             apply_eol,
-            apply_ius
-          } = req.body;
+            apply_ius,
+            creation_date
+        } = req.body;
         
+        //verifico si existe el producto
+        const existeProducto = await Product.findOne({where: {product_code}});
+
+        if(existeProducto){
+            logger.warn(`ProductScope: createProductCommProduct - Producto ya existente ${product_code}`);
+            return res.status(200).json({message: "Producto ya existente"});
+        }
+
+        //Verificar si existe un ProductType con product_type_code informado
+        const _productType = await Product_Type.findOne(
+        {
+            where: {product_type_code}
+        })
+    
+        if(!_productType){
+            logger.warn(`ProductScope: createProductCommProduct - product type code inexistente ${product_type_code}`);
+            return res.status(400).json({message: "product type code inexistente"});
+        }
+
+        if(!apply_eol || !apply_ius){
+            logger.warn(`ProductScope: createProductCommProduct - apply_eol/apply_ius no informado`);
+            return res.status(400).json({message: "apply_eol/apply_ius no informado"});
+        }
+
         const producto=new Product();
         producto.product_code=product_code,
         producto.product_name=product_name,   
-        producto.product_type_id=product_type_id,
+        producto.product_type_id=_productType.product_type_id,
         producto.apply_eol=apply_eol,
         producto.apply_ius=apply_ius
 
@@ -526,11 +551,11 @@ const createProductCommProduct = async (req:Request,res:Response) => {
             return res.json({ok:true,mensaje:'Producto creado',producto});
         }
         else{
-          logger.warn(`ProductScope: createProductCommProduct: El producto no pudo ser creado`);
-          return res.json({
-              ok:false,
-              message:'El producto no pudo ser creado'
-          })
+            logger.warn(`ProductScope: createProductCommProduct: El producto no pudo ser creado`);
+            return res.json({
+                ok:false,
+                message:'El producto no pudo ser creado'
+            })
         } 
     }
     catch (error) {
@@ -543,6 +568,71 @@ const createProductCommProduct = async (req:Request,res:Response) => {
     }    
 } // fin createProductCommProduct
 
+//Dar de alta un Product Scope nuevo
+const createProductScopeCommProduct = async (req:Request,res:Response) => {
+    try{
+    let fechaHoy= moment();
+        
+    const  { 
+        product_id,
+        product_max_access_count,     
+        product_max_user_count,
+        scope_finish_date
+      } = req.body;
+
+      //Verificar si existe este producto..
+    const _producto = await Product.find({where: {product_id}})
+    .then(_producto=>{
+        if(!_producto){
+            return res.status(400).json({message: "Producto no encontrado"});
+        }
+    }).catch((err) => res.status(404).json({message: "Producto no encontrado"}));
+
+        //Verificar si ya existe un alcance activo para el producto
+        const _productScope = await Product_Scope.findOne({
+            where: {
+                product_id:product_id,
+                is_active:true
+            }
+        })
+        if(_productScope){
+            logger.warn(`ProductScope: createProductScopeCommProduct - Ya existe un alcance de producto activo para el id producto informado ${product_id}`);
+            return res.status(200).json({message: "Ya existe un alcance de producto activo para el id producto informado"});
+        }
+
+        const prodScope=new Product_Scope();
+        prodScope.product_id=product_id,
+        prodScope.product_max_access_count=product_max_access_count,   
+        prodScope.product_max_user_count=product_max_user_count,
+        prodScope.scope_finish_date=scope_finish_date,
+        prodScope.scope_start_date=fechaHoy,
+        prodScope.creation_date=fechaHoy
+        await prodScope.save();
+
+
+        if(prodScope){
+            logger.info(`ProductScope: createProductScopeCommProduct ok`);
+            return res.status(201).json({ok:true,mensaje:'Alcance de Producto creado',prodScope});
+        }
+        else{
+            logger.warn(`ProductScope: createProductScopeCommProduct: El Item no pudo ser creado`);
+            return res.status(400).json({
+                ok:false,
+                message:'El Alcance de este producto no pudo ser creado'
+            })
+        }
+      }
+      catch (error) {
+        logger.error(`ProductScope: createProductScopeCommProduct error: ${error}`);
+        return res.status(400).json({
+            ok:false,
+            mensaje:error,
+            error:error
+        });
+    }    
+} // fin createProductScopeCommProduct
+
+
 
 
 module.exports = {
@@ -554,7 +644,7 @@ module.exports = {
     getAllProductsCommProduct,
     addSubscriptionCommProduct,
     createProductCommProduct,
-    // createProductScopeCommProduct,
+    createProductScopeCommProduct,
     // disableSubscriptionCommProduct,
     // updateProductCommProduct,
     // updateProductScopeCommProduct

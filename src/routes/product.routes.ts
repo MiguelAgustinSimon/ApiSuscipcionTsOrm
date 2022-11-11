@@ -30,8 +30,8 @@ router.get("/getAllProductsCommProduct",verificarToken, getAllProductsCommProduc
 
 // //Rutas POST
 router.post("/addSubscriptionCommProduct",verificarToken, addSubscriptionCommProduct);
-// router.post("/createProductCommProduct",verificarToken, createProductCommProduct);
-// router.post("/createProductScopeCommProduct",verificarToken, createProductScopeCommProduct);
+router.post("/createProductCommProduct",verificarToken, createProductCommProduct);
+router.post("/createProductScopeCommProduct",verificarToken, createProductScopeCommProduct);
 
 // //Rutas PUT
 // router.put("/disableSubscriptionCommProduct/:subscriber_id?/:product_id?",verificarToken, disableSubscriptionCommProduct);

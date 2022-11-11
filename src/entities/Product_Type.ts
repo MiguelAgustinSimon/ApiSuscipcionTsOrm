@@ -4,7 +4,7 @@ import { Product } from "./Product";
 @Entity('comm_prod.product_type')
 export class Product_Type extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
-    product_type_id: string;
+    product_type_id: number;
 
     @Column()
     product_type_code:string;
