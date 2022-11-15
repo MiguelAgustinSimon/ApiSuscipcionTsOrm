@@ -633,6 +633,308 @@ const createProductScopeCommProduct = async (req:Request,res:Response) => {
 } // fin createProductScopeCommProduct
 
 
+// ---------------------------------------------------- RUTAS PUT--------------------------------------------------------------
+
+//Desactivar una Suscripcion
+const disableSubscriptionCommProduct = async (req:Request,res:Response) => {
+    try{
+    const {subscriber_id,product_id}=req.params;
+    let req2=await parseJwt(req.token); 
+
+    let fechaHoy = moment();  
+    if(!product_id || !subscriber_id){
+        logger.warn(`disableSubscriptionCommProduct: No se ingreso product_id y/o subscriber_id`);
+        return res.status(400).json({message: "No se ingreso product_id y/o subscriber_id."})
+    }
+
+    if(NullChecker(subscriber_id, product_id)){
+        logger.warn(`ProductScope: disableSubscriptionCommProduct: Peticion invalida`);
+        return res.status(400).json({message: 'Peticion invalida'});
+    }
+    if(!UUIDChecker(subscriber_id)){
+        logger.warn(`ProductScope: disableSubscriptionCommProduct: Ingrese un UUID valido: ${subscriber_id}`);
+        return res.status(400).json({message: 'Ingrese un UUID valido'});
+    }
+
+    await Product_Subscription.findOne({
+       where:{subscriber_id:subscriber_id, product_id:product_id, is_active:true}
+    }).then(async modeloProductoSuscripcion=>{
+        if(modeloProductoSuscripcion){
+            modeloProductoSuscripcion.is_active=false,
+            modeloProductoSuscripcion.modification_date=fechaHoy,
+            modeloProductoSuscripcion.modification_user=req2.idpData.email
+                await Product_Subscription.update({product_subscription_id:modeloProductoSuscripcion.product_subscription_id}, modeloProductoSuscripcion)
+                .then(async resultado=>{
+                    logger.info(`ProductScope: disableSubscriptionCommProduct ok`);
+                        if(resultado.affected!>0){
+                            const _ps = await Product_Subscription.findOne({
+                                    where:{subscriber_id:subscriber_id, product_id:product_id}
+                            })
+                            if(_ps){
+                                return res.status(201).json({
+                                    //ok:true,
+                                    message:'Producto actualizado exitosamente',
+                                    result:_ps
+                                });
+                            }
+                        }
+                        else{
+                            logger.warn(`ProductScope: disableSubscriptionCommProduct: La suscripcion no pudo ser modificada`);
+                            return res.status(400).json({
+                                ok:false,
+                                message:'La suscripcion no pudo ser modificada'
+                            })
+                        }
+                }).catch(error=>{
+                    logger.error(`ProductScope: disableSubscriptionCommProduct error: ${error.message}`);
+                    return res.status(404).json({
+                        ok:false,
+                        mensaje:error.message,
+                        error:error.message,
+                    });
+                });           
+        }
+        else{
+            logger.warn(`ProductScope: disableSubscriptionCommProduct: Suscripcion no encontrada`);
+            return res.status(400).json({
+                ok:false,
+                message:'Suscripcion no encontrada'
+            });
+        }
+    }).catch(error=>{
+            logger.error(`ProductScope: disableSubscriptionCommProduct error: ${error.message}`);
+            res.status(404).json({
+                ok:false,
+                mensaje:error.message,
+                error:error.message,
+            });
+        }); 
+    }
+    catch (error) {
+        logger.error(`ProductScope: disableSubscriptionCommProduct error: ${error}`);
+        return res.status(400).json({
+            ok:false,
+            mensaje:error,
+            error:error
+        });
+    }
+} // fin disableSubscriptionCommProduct
+
+//Modificar los datos un producto en la tabla product.
+const updateProductCommProduct = async (req:Request,res:Response) => {
+    try 
+    {
+        const {product}=req.params;
+        const {
+            product_code,
+            product_id,
+            product_name,
+            product_type_code,
+            apply_eol,
+            apply_ius
+        } = req.body;
+        
+        let where:any={};
+    
+        if(!product){
+            logger.warn(`updateProductCommProduct: No se ingreso el producto`);
+            return res.status(400).json({message: "No se ingreso el producto."})
+        }
+    
+        if(NullChecker(product)){
+            logger.warn(`ProductScope: updateProductCommProduct: Peticion invalida`);
+            return res.status(400).json({message: 'Peticion invalida'});
+        }
+
+        if(!UUIDChecker(product)){
+            where.product_code= product;
+        }
+        else{
+            where.product_id= product
+        }    
+    
+        //Verificar si existe un producto con el id de producto informado
+        const _product = await Product.findOne({where})
+        if(!_product){
+            logger.warn(`ProductScope: updateProductCommProduct - No existe el producto con el id de producto informado ${product}`);
+            return res.status(400).json({message: "No existe el producto con el id de producto informado"});
+        }
+    
+          //Verificar si existe un ProductType con product_type_code informado
+            const _productType = await Product_Type.findOne(
+            {
+                where: {product_type_code}
+            })
+            if(!_productType){
+                logger.warn(`ProductScope: updateProductCommProduct - product type code inexistente ${product_type_code}`);
+                return res.status(400).json({message: "product type code inexistente"});
+            }
+        
+            let fechaHoy= moment();
+            await Product.findOne({
+                where
+            }).then(async modeloProducto=>{
+                if(modeloProducto){
+                    //console.log(modeloProducto);
+                    modeloProducto.product_code=product_code,
+                    modeloProducto.product_name=product_name,
+                    modeloProducto.product_type_id=_productType.product_type_id,
+                    modeloProducto.apply_eol=apply_eol,
+                    modeloProducto.apply_ius=apply_ius,
+                    modeloProducto.modification_date=fechaHoy;
+                    
+                    await Product.update({product_id:modeloProducto.product_id},modeloProducto)
+                    .then(async resultado=>{
+                        logger.info(`ProductScope: updateProductCommProduct ok`);
+                        if(resultado.affected!>0){
+                            const _p = await Product.findOne({
+                                    where:{product_id:modeloProducto.product_id}
+                            })
+                            if(_p){
+                                return res.status(201).json({
+                                    //ok:true,
+                                    message:'Producto actualizado exitosamente',
+                                    result:_p
+                                });
+                            }
+                        }
+                        else{
+                            logger.warn(`ProductScope: updateProductCommProduct: El Producto no pudo ser modificado`);
+                            return res.status(400).json({
+                                ok:false,
+                                message:'El Producto no pudo ser modificado'
+                            })
+                        }
+                    }).catch(error=>{
+                        logger.error(`ProductScope: updateProductCommProduct error: ${error.message}`);
+                        return res.status(404).json({
+                            ok:false,
+                            mensaje:error.message,
+                            error:error.message,
+                        });
+                    }); 
+                }
+                else{
+                    logger.warn(`ProductScope: updateProductCommProduct: Producto no encontrado`);
+                    return res.status(400).json({
+                        ok:false,
+                        message:'Producto no encontrado'
+                    });
+                }
+            }).catch(error=>{
+                    logger.error(`ProductScope: updateProductCommProduct error: ${error.message}`);
+                    res.status(404).json({
+                        ok:false,
+                        mensaje:error.message,
+                        error:error.message,
+                    });
+                }); 
+    }catch (error) {
+        logger.error(`ProductScope: updateProductCommProduct error: ${error}`);
+        res.status(404).json({
+            ok:false,
+            mensaje:"Ha ocurrido un error, asegurese de ingresar los campos correspondientes",
+            error
+        });
+    }        
+} // fin updateProductCommProduct
+
+//Modificar Product Scope 
+const updateProductScopeCommProduct = async (req:Request,res:Response) => {
+    const {product_scope_id}=req.params;
+    let fechaHoy= moment();
+    const {
+        product_id,
+        product_max_access_count,
+        product_max_user_count,
+        scope_start_date,
+        scope_finish_date,
+        is_active
+    } = req.body;
+
+    if(!product_scope_id){
+        logger.warn(`updateProductScopeCommProduct: No se ingreso el product_scope_id`);
+        return res.status(400).json({message: "No se ingreso el product_scope_id."})
+    }
+    if(!UUIDChecker(product_scope_id)){
+        logger.warn(`ProductScope: updateProductScopeCommProduct: Ingrese un UUID valido: ${product_scope_id}`);
+        return res.status(400).json({message: 'Ingrese un UUID valido'});
+    }
+ 
+    var validaStartDate = moment(scope_start_date);
+    var validaFinishDate = moment(scope_finish_date);
+    if(!validaStartDate.isValid() || validaStartDate>=fechaHoy){
+        logger.warn(`updateProductScopeCommProduct: Fecha de inicio invalida`);
+        return res.status(400).json({message: "Fecha de inicio invalida"})
+    }
+    if(!validaFinishDate.isValid() || validaFinishDate<=fechaHoy){
+        logger.warn(`updateProductScopeCommProduct: Fecha de finalizacion invalida`);
+        return res.status(400).json({message: "Fecha de finalizacion invalida"})
+    }
+
+    if(!is_active){
+        return res.status(400).json({message: "El campo is_active no fue informado"})
+    }
+
+    await Product_Scope.findOne({
+        where:{product_scope_id: product_scope_id}
+    }).then(async scope=>{
+        if(scope){
+            scope.product_id=product_id,
+            scope.product_max_access_count=product_max_access_count,   
+            scope.product_max_user_count=product_max_user_count,
+            scope.scope_start_date=validaFinishDate,
+            scope.scope_finish_date=validaFinishDate,
+            scope.is_active=is_active,
+            scope.modification_date=fechaHoy    
+            await Product_Scope.update({product_scope_id: product_scope_id},scope)
+            .then(async resultado=>{
+                logger.info(`ProductScope: updateProductScopeCommProduct ok`);
+                if(resultado.affected!>0){
+                    const _p = await Product_Scope.findOne({
+                        where:{product_scope_id: scope.product_scope_id}
+                    })
+                    if(_p){
+                        return res.status(201).json({
+                            //ok:true,
+                            message:'Alcance de Producto modificado',
+                            prodScope:_p
+                        });
+                    }
+                }
+                else{
+                    logger.warn(`ProductScope: updateProductScopeCommProduct: El Alcance de este producto no pudo ser modificado`);
+                    return res.status(400).json({
+                        ok:false,
+                        message:'El Alcance de este producto no pudo ser modificado'
+                    })
+                }
+            }).catch(error=>{
+                logger.error(`ProductScope: updateProductScopeCommProduct error: ${error.message}`);
+                return res.status(404).json({
+                    ok:false,
+                    mensaje:error.message,
+                    error:error.message,
+                });
+            });   
+        }
+        else{
+            logger.warn(`ProductScope: updateProductScopeCommProduct: Item no encontrado`);
+            return res.status(400).json({
+                ok:false,
+                message:'Item no encontrado'
+            });
+        }
+    }).catch(error=>{
+        logger.error(`ProductScope: updateProductScopeCommProduct error: ${error.message}`);
+        res.status(404).json({
+            ok:false,
+            mensaje:"Debe cargar correctamente los campos",
+            error:error.message,
+        });
+    }); 
+} // fin updateProductScopeCommProduct
+
 
 
 module.exports = {
@@ -645,9 +947,9 @@ module.exports = {
     addSubscriptionCommProduct,
     createProductCommProduct,
     createProductScopeCommProduct,
-    // disableSubscriptionCommProduct,
-    // updateProductCommProduct,
-    // updateProductScopeCommProduct
+    disableSubscriptionCommProduct,
+    updateProductCommProduct,
+    updateProductScopeCommProduct
   }
 
 

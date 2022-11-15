@@ -1,0 +1,5 @@
+[2022-11-15T10:31:12.776] [WARN] default - ProductScope: updateProductCommProduct - No existe el producto con el id de producto informado undefined
+[2022-11-15T10:41:16.202] [WARN] default - ProductScope: updateProductCommProduct - No existe el producto con el id de producto informado undefined
+[2022-11-15T10:42:18.197] [WARN] default - ProductScope: updateProductCommProduct: Producto no encontrado
+[2022-11-15T10:45:23.947] [WARN] default - ProductScope: updateProductCommProduct: Producto no encontrado
+[2022-11-15T10:48:31.086] [WARN] default - ProductScope: updateProductCommProduct: Producto no encontrado

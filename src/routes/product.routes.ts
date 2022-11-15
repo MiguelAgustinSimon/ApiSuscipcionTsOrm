@@ -34,8 +34,8 @@ router.post("/createProductCommProduct",verificarToken, createProductCommProduct
 router.post("/createProductScopeCommProduct",verificarToken, createProductScopeCommProduct);
 
 // //Rutas PUT
-// router.put("/disableSubscriptionCommProduct/:subscriber_id?/:product_id?",verificarToken, disableSubscriptionCommProduct);
-// router.put("/updateProductCommProduct/:product?",verificarToken, updateProductCommProduct);
-// router.put("/updateProductScopeCommProduct/:product_scope_id?",verificarToken, updateProductScopeCommProduct);
+router.put("/disableSubscriptionCommProduct/:subscriber_id?/:product_id?",verificarToken, disableSubscriptionCommProduct);
+router.put("/updateProductCommProduct/:product?",verificarToken, updateProductCommProduct);
+router.put("/updateProductScopeCommProduct/:product_scope_id?",verificarToken, updateProductScopeCommProduct);
 
 export default router;

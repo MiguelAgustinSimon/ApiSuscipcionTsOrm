@@ -1,0 +1,14 @@
+[2022-11-14T10:33:56.318] [WARN] default - ProductScope: disableSubscriptionCommProduct: Suscripcion no encontrada
+[2022-11-14T10:35:07.382] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-14T10:35:49.870] [INFO] default - ProductScope: disableSubscriptionCommProduct ok
+[2022-11-14T10:36:05.332] [INFO] default - ProductScope: getBySuscriptionProductIdCommProduct ok
+[2022-11-14T10:37:35.447] [WARN] default - ProductScope: disableSubscriptionCommProduct: Suscripcion no encontrada
+[2022-11-14T10:38:04.552] [WARN] default - ProductScope: disableSubscriptionCommProduct: Suscripcion no encontrada
+[2022-11-14T10:38:53.820] [INFO] default - ProductScope: disableSubscriptionCommProduct ok
+[2022-11-14T10:39:14.470] [INFO] default - ProductScope: disableSubscriptionCommProduct ok
+[2022-11-14T10:41:30.969] [INFO] default - ProductScope: disableSubscriptionCommProduct ok
+[2022-11-14T10:41:30.975] [ERROR] default - ProductScope: disableSubscriptionCommProduct error: Cannot access 'psEditada' before initialization
+[2022-11-14T10:41:50.013] [INFO] default - ProductScope: disableSubscriptionCommProduct ok
+[2022-11-14T10:41:50.020] [ERROR] default - ProductScope: disableSubscriptionCommProduct error: Cannot access 'psEditada' before initialization
+[2022-11-14T10:44:04.707] [INFO] default - ProductScope: disableSubscriptionCommProduct ok
+[2022-11-14T10:51:27.091] [INFO] default - ProductScope: disableSubscriptionCommProduct ok
