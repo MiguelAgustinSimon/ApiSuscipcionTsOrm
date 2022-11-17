@@ -52,7 +52,5 @@ export class Product_Subscription extends BaseEntity {
    @JoinColumn({name:'subscriber_id'})
    subscriber: Subscriber;
 
-    //-------------------------------------RELACION PRODUCT-SUBSCRIPTION / PRODUCT-SCOPE----------------------------------------
-    @OneToOne(() => Product_Scope)
-    product_Scope: Product_Scope
+ 
 }

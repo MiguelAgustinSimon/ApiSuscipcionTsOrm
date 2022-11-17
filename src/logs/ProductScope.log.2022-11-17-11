@@ -1,0 +1,15 @@
+[2022-11-17T11:02:01.643] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:02:25.080] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:02:57.058] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:03:18.552] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:03:44.837] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:04:32.359] [ERROR] default - ProductScope: getSubscriberSuscriptionCommProduct error: Cannot read properties of undefined (reading 'joinColumns')
+[2022-11-17T11:05:15.482] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:23:29.413] [ERROR] default - ProductScope: getSubscriberSuscriptionCommProduct error: Cannot read properties of undefined (reading 'joinColumns')
+[2022-11-17T11:33:11.592] [ERROR] default - ProductScope: getSubscriberSuscriptionCommProduct error: missing FROM-clause entry for table "product_subscription__product_subscription_product"
+[2022-11-17T11:42:49.924] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:44:00.886] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:46:35.723] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:47:24.765] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:47:53.285] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
+[2022-11-17T11:55:22.728] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok

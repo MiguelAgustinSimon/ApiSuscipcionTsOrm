@@ -7,6 +7,7 @@ import { Subscriber } from "../entities/Subscriber";
 import { Product_Type } from "../entities/Product_Type";
 import { Product_Subscription } from "../entities/Product_Subscription";
 import { Product_Scope } from "../entities/Product_Scope";
+import { LessThan, MoreThan } from "typeorm";
 var moment = require('moment'); 
 
 const parseJwt=async (token:string)=>{
@@ -123,7 +124,7 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
     }
 
     if(subscriber_id){
-        where.subscriber_id= {subscriber_id}
+        where.subscriber_id= subscriber_id
     }
     
     if(fechaInicio){
@@ -133,7 +134,8 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
         }else{
             if(validaStartDate)
             {
-                where.subscription_start_date>= {validaStartDate}
+                //where.subscription_start_date>=validaStartDate
+                where.subscription_start_date=MoreThan(validaStartDate)
             }
         }
     }
@@ -144,45 +146,43 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
         }else{
             if(validaFinishDate)
             {
-                where.subscription_finish_date<= {validaFinishDate}
+                where.subscription_finish_date=LessThan(validaFinishDate)
             }
         }
     }
 
     if(is_active){
-        where.is_active= {is_active}
+        where.is_active= is_active
     }
     if(product_id){
-        where.product_id= {product_id}
+        where.product_id= product_id
     }
     if(product_code){
         //obtengo el product_id pasandole el product_Code
        await obtenerProductoEspecifico(product_code)
         .then(productoObtenido => {
-            where.product_id= {productoObtenido}
+            where.product_id= productoObtenido
         });
     }
     console.log(where);
 
-    const [count]:any = await Product_Subscription.findAndCount({
+    let count = await Product_Subscription.findAndCount({
+        where,
         take:size,
-        skip:page*size,
-        where
-    })
-    res.header('X-Total-Count', count);
-    
+        skip:page*size
+    })    
+    let contador:any=count;
+    res.header('X-Total-Count', contador);
+
    await Product_Subscription.find({ 
+    where,
     take:size,
     skip:page*size,
-    relations: {
-        product: true,
-        product_Scope:true
-    },
-       where,
-       order: {
-            product_subscription_id:"ASC",
-            product: {product_name: "ASC",}
-        }
+    relations: [ 'product', 'product.product_Scopes','product.product_type'],
+    order: {
+        product_subscription_id:"ASC",
+        product: {product_name: "ASC"}
+    }
    })
    .then( (data)=>{
         if (data.length===0) 
