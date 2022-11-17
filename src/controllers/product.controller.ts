@@ -8,11 +8,16 @@ import { Product_Type } from "../entities/Product_Type";
 import { Product_Subscription } from "../entities/Product_Subscription";
 import { Product_Scope } from "../entities/Product_Scope";
 import { LessThan, MoreThan } from "typeorm";
+import ProductService from '../service/product.service';
+import BaseException from "../exceptions/BaseException";
+
 var moment = require('moment'); 
 
 const parseJwt=async (token:string)=>{
     return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
 }
+
+let _productService=new ProductService();
 
 // ---------------------------------------------------- RUTAS GET--------------------------------------------------------------
 const getProducts = async (req:Request,res:Response) => {
@@ -37,50 +42,26 @@ const getProducts = async (req:Request,res:Response) => {
         }
         let pageSize=page*size;
 
-        let [productosFiltrados, count] = await Product.findAndCount({
-            where: { 
-                product_id: unProductID
-              },
-            relations: {
-                product_Subscriptions: true,
-            },
-            take:size,
-            skip:pageSize
-          
-        });
-        let contador:any=count;
+        //llamo al Service
+        const resultado = await _productService.getProducts(unProductID,page,size);
+
+        let contador:any=resultado.length;
         res.header('X-Total-Count', contador);
-        if(productosFiltrados){
+      
+ 
+        if(resultado.length>0){
             logger.info(`ProductScope: getProducts ok`);
-            return res.json(productosFiltrados);
+            return res.json(resultado);
         }
         else{
-          logger.warn(`ProductScope: getProducts: No se pudieron obtener productos`);
-          return res.json({
-              ok:false,
-              message:'No se pudieron obtener productos'
-          })
+            logger.warn(`ProductScope: getProducts: No se pudieron obtener productos`);
+            throw new BaseException("No se pudieron obtener productos.",404,"ProductScope: getProducts");
         }         
     }
     catch (error) {
         logger.error(`ProductScope: getProducts error: ${error}`);
         res.json({error:error});
     }
-}
-
-const obtenerProductoEspecifico= async (product_code:any) => {
-    //sirve para devolver el product_id en getSubscriberSuscriptionCommProduct
-    let id=0;
-    await Product.findOne({
-        where: {product_code} 
-      })
-    .then( (data:any)=>{
-            id=data.dataValues.product_id;
-    })
-    .catch( (error)=>{
-            console.log(`error: ${error}`);
-    });
-    return id;
 }
 
 // Todas las suscripciones por Suscriptor
@@ -106,12 +87,13 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
 
     if(!subscriber_id){
         logger.warn(`getSubscriberSuscriptionCommProduct: No se ingreso subscriber_id`);
-        return res.status(400).json({message: "No se ingreso subscriber_id."})
+        throw new BaseException("No se ingreso subscriber_id.",400,"ProductScope: getSubscriberSuscriptionCommProduct");
+        //return res.status(400).json({message: "No se ingreso subscriber_id."})
     }
 
     if(!UUIDChecker(subscriber_id)){
         logger.warn(`ProductScope: getSubscriberSuscriptionCommProduct: Ingrese un UUID valido: ${subscriber_id}`);
-        return res.status(400).json({message: 'Ingrese un UUID valido'});
+        throw new BaseException("Ingrese un UUID valido.",400,"ProductScope: getSubscriberSuscriptionCommProduct");
     }
     
 
@@ -130,7 +112,8 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
     if(fechaInicio){
         if(!validaStartDate.isValid()){
             logger.warn(`getSubscriberSuscriptionCommProduct: Fecha de inicio invalida`);
-            return res.status(400).json({message: "Fecha de inicio invalida"})
+            throw new BaseException("Fecha de inicio invalida.",400,"ProductScope: getSubscriberSuscriptionCommProduct");
+
         }else{
             if(validaStartDate)
             {
@@ -142,7 +125,8 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
     if(fechaFin){
         if(!validaFinishDate.isValid()){
             logger.warn(`getSubscriberSuscriptionCommProduct: Fecha de finalizacion invalida`);
-            return res.status(400).json({message: "Fecha de finalizacion invalida"})
+            throw new BaseException("Fecha de finalizacion invalida.",400,"ProductScope: getSubscriberSuscriptionCommProduct");
+
         }else{
             if(validaFinishDate)
             {
@@ -157,48 +141,33 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
     if(product_id){
         where.product_id= product_id
     }
-    if(product_code){
-        //obtengo el product_id pasandole el product_Code
-       await obtenerProductoEspecifico(product_code)
-        .then(productoObtenido => {
-            where.product_id= productoObtenido
-        });
-    }
-    console.log(where);
-
-    let count = await Product_Subscription.findAndCount({
-        where,
-        take:size,
-        skip:page*size
-    })    
-    let contador:any=count;
-    res.header('X-Total-Count', contador);
-
-   await Product_Subscription.find({ 
-    where,
-    take:size,
-    skip:page*size,
-    relations: [ 'product', 'product.product_Scopes','product.product_type'],
-    order: {
-        product_subscription_id:"ASC",
-        product: {product_name: "ASC"}
-    }
-   })
-   .then( (data)=>{
-        if (data.length===0) 
-        { 
-            logger.warn(`ProductScope: getSubscriberSuscriptionCommProduct: Datos no encontrados`);
-            return res.status(204).json({message: "Datos no encontrados."});
+    else{
+        if(product_code){
+            //obtengo el product_id pasandole el product_Code
+        let productoObtenido= await _productService.obtenerProductoEspecifico(product_code);
+            if(UUIDChecker(productoObtenido)){
+                where.product_id= productoObtenido
+            }
         }
-        else{
-            logger.info(`ProductScope: getSubscriberSuscriptionCommProduct ok`);
-            return res.status(200).json(data);
-        }
-   })
-  .catch( (error)=>{
-        logger.error(`ProductScope: getSubscriberSuscriptionCommProduct error: ${error.message}`);
-       res.json({error:error.message});
-   });
+    }
+
+     //llamo al Service
+     const resultado = await _productService.getSubscriberSuscriptionCommProduct(where,page,size);
+
+     let contador:any=resultado.length;
+     res.header('X-Total-Count', contador);
+
+     if(resultado.length>0){
+        logger.info(`ProductScope: getSubscriberSuscriptionCommProduct ok`);
+        return res.json(resultado);
+    }
+    else{
+        let mensaje="Datos no encontrados";
+        logger.warn(`ProductScope: getSubscriberSuscriptionCommProduct: ${mensaje}`);
+        throw new BaseException(`${mensaje}`,204,"ProductScope: getSubscriberSuscriptionCommProduct");
+    } 
+ 
+  
 }
 
 //Todas las suscripciones por Producto
