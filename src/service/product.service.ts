@@ -55,4 +55,62 @@ export default class ProductService {
             }
            })
     }
+
+    consultarExistenciaProducto = async (product_id:any) => {
+        //sirve para devolver el product_id en getSubscriberSuscriptionCommProduct
+        let id=0;
+        await Product.findOne({
+            where: {product_id} 
+          })
+        .then( (data:any)=>{
+            id=data.product_id;
+        })
+        .catch( (error)=>{
+                console.log(`error: ${error}`);
+        });
+        console.log(id);
+        return id;
+    }
+
+    getBySuscriptionProductIdCommProduct=async (where:any,page:any,size:any)=> {
+        return await Product.find({ 
+            take:size,
+            skip:page*size,
+            relations: {
+                product_Subscriptions: true,
+                product_Scopes:true,
+                product_type:true
+            },
+            where,
+            order: {
+                product_Subscriptions: {subscriber_id: "ASC", product_subscription_id: "ASC"}
+            }
+       })
+    }
+
+    getProductCommProduct=async (product_code:any)=> {
+        return  await Product.find({
+            where: {product_code:product_code}, 
+            relations: {
+                product_Scopes:true,
+                product_type:true
+            }            
+          })
+    }
+
+    getAllProductsCommProduct=async (where:any,page:any,size:any)=> {
+        return await Product.find({ 
+            where,
+            take:size,
+            skip:page*size,
+            relations: {
+                product_Scopes:true,
+                product_type:true
+            }, 
+            order: {
+                product_name: 'ASC',
+                product_code: 'ASC'
+            }
+       })
+    }
 }

@@ -45,11 +45,9 @@ const getProducts = async (req:Request,res:Response) => {
         //llamo al Service
         const resultado = await _productService.getProducts(unProductID,page,size);
 
-        let contador:any=resultado.length;
-        res.header('X-Total-Count', contador);
-      
- 
         if(resultado.length>0){
+            let contador:any=resultado.length;
+            res.header('X-Total-Count', contador);
             logger.info(`ProductScope: getProducts ok`);
             return res.json(resultado);
         }
@@ -66,6 +64,7 @@ const getProducts = async (req:Request,res:Response) => {
 
 // Todas las suscripciones por Suscriptor
 const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
+    try {
     const {subscriber_id}= req.params;
     let pageAsNumber:any=req.query.page;
     let sizeAsNumber:any=req.query.size;
@@ -154,10 +153,9 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
      //llamo al Service
      const resultado = await _productService.getSubscriberSuscriptionCommProduct(where,page,size);
 
-     let contador:any=resultado.length;
-     res.header('X-Total-Count', contador);
-
      if(resultado.length>0){
+        let contador:any=resultado.length;
+        res.header('X-Total-Count', contador);
         logger.info(`ProductScope: getSubscriberSuscriptionCommProduct ok`);
         return res.json(resultado);
     }
@@ -166,197 +164,167 @@ const getSubscriberSuscriptionCommProduct= async (req:Request,res:Response) => {
         logger.warn(`ProductScope: getSubscriberSuscriptionCommProduct: ${mensaje}`);
         throw new BaseException(`${mensaje}`,204,"ProductScope: getSubscriberSuscriptionCommProduct");
     } 
- 
+    } catch (error) {
+        logger.error(`ProductScope: getProducts error: ${error}`);
+        res.json({error:error});
+    }
   
 }
 
 //Todas las suscripciones por Producto
 const getBySuscriptionProductIdCommProduct= async (req:Request,res:Response) => {
-    const {product_id}= req.params;
-    let where:any={};
-    let pageAsNumber:any=req.query.page;
-    let sizeAsNumber:any=req.query.size;
-    pageAsNumber=Number.parseInt(pageAsNumber);
-    sizeAsNumber=Number.parseInt(sizeAsNumber);
-    let page=0;
-    let size=10;
+    try{
+        const {product_id}= req.params;
+        let where:any={};
+        let pageAsNumber:any=req.query.page;
+        let sizeAsNumber:any=req.query.size;
+        pageAsNumber=Number.parseInt(pageAsNumber);
+        sizeAsNumber=Number.parseInt(sizeAsNumber);
+        let page=0;
+        let size=10;
 
-    if(!product_id){
-        logger.warn(`getBySuscriptionProductIdCommProduct: No se ingreso product_id`);
-        return res.status(400).json({message: "No se ingreso product_id."})
-    }
+        if(!product_id){
+            logger.warn(`getBySuscriptionProductIdCommProduct: No se ingreso product_id`);
+            return res.status(400).json({message: "No se ingreso product_id."})
+        }
 
-    if(!UUIDChecker(product_id)){
-        logger.warn(`ProductScope: getBySuscriptionProductIdCommProduct: Ingrese un UUID valido: ${product_id}`);
-        return res.status(400).json({message: 'Ingrese un UUID valido'});
-    }
+        if(!UUIDChecker(product_id)){
+            logger.warn(`ProductScope: getBySuscriptionProductIdCommProduct: Ingrese un UUID valido: ${product_id}`);
+            return res.status(400).json({message: 'Ingrese un UUID valido'});
+        }
 
-    //Verificar si existe este producto..
-    const _product = await Product.findOne(
-    {
-        
-        where: {product_id:product_id}
-    })
-    if(!_product){
-        logger.warn(`ProductScope: getBySuscriptionProductIdCommProduct - Datos no encontrados ${_product}`);
-        return res.status(400).json({message: "Datos no encontrados"});
-    }
+        //llamo al Service
+        const _product = await _productService.consultarExistenciaProducto(product_id);
 
-    if(!Number.isNaN(pageAsNumber)&& pageAsNumber>0){
-        page=pageAsNumber;
-    }
+        if(_product==0){
+            logger.warn(`ProductScope: getBySuscriptionProductIdCommProduct - Datos no encontrados ${_product}`);
+            throw new BaseException("Datos no encontrados.",400,"ProductScope: getBySuscriptionProductIdCommProduct");
+        }
 
-    if(!Number.isNaN(sizeAsNumber) && sizeAsNumber>0 && sizeAsNumber<10){
-        size=sizeAsNumber;
-    }
 
-    const [count]:any= await Product.findAndCount({
-        take:size,
-        skip:page*size,
-        where
-    })
-    res.header('X-Total-Count', count.length);
+        if(!Number.isNaN(pageAsNumber)&& pageAsNumber>0){
+            page=pageAsNumber;
+        }
 
-   await Product.find({ 
-        take:size,
-        skip:page*size,
-        relations: {
-            product_Subscriptions: true,
-            product_Scopes:true,
-            product_type:true
-        },
-           where,
-           order: {
-                product_Subscriptions: {subscriber_id: "ASC", product_subscription_id: "ASC"}
-            }
-   })
-   .then( (data)=>{
-       if(data){
+        if(!Number.isNaN(sizeAsNumber) && sizeAsNumber>0 && sizeAsNumber<10){
+            size=sizeAsNumber;
+        }
+
+        //llamo al Service
+        const resultado = await _productService.getBySuscriptionProductIdCommProduct(where,page,size);
+
+        if(resultado.length>0){
+            let contador:any=resultado.length;
+            res.header('X-Total-Count', contador);
             logger.info(`ProductScope: getBySuscriptionProductIdCommProduct ok`);
-            return res.status(200).json(data);
-       }
-       else{
-            logger.warn(`ProductScope: getBySuscriptionProductIdCommProduct: Datos no encontrados`);
-            return res.status(404).json({message: "Datos no encontrados."})
-       }
-   })
-  .catch( (error)=>{
-        logger.error(`ProductScope: getBySuscriptionProductIdCommProduct error: ${error.message}`);
-        res.json({error:error.message});
-   });
+            return res.json(resultado);
+        }
+        else{
+            let mensaje="Datos no encontrados";
+            logger.warn(`ProductScope: getBySuscriptionProductIdCommProduct: ${mensaje}`);
+            throw new BaseException(`${mensaje}`,404,"ProductScope: getBySuscriptionProductIdCommProduct");
+        }
+    } catch (error) {
+        logger.error(`ProductScope: getProducts error: ${error}`);
+        res.json({error:error});
+    } 
 }
 
 //Traer producto especifico por codProd ERP
 const getProductCommProduct= async (req:Request,res:Response) => {
-    const {product_code}= req.params;
-    if(!product_code){
-        logger.warn(`getProductCommProduct: No se ingreso product_code`);
-        return res.status(400).json({message: "No se ingreso product_code."})
-    }
+    try {
+        const {product_code}= req.params;
+        if(!product_code){
+            logger.warn(`getProductCommProduct: No se ingreso product_code`);
+            throw new BaseException(`No se ingreso product_code`,400,"ProductScope: getProductCommProduct");
 
-    await Product.findOne({
-        relations: {
-            product_Scopes:true,
-            product_type:true
-        },
-        where: {product_code} 
-      })
-   .then( (data)=>{
-       if(data){
+        }
+        //llamo al Service
+        const resultado = await _productService.getProductCommProduct(product_code);
+
+        if(resultado.length>0){
+            let contador:any=resultado.length;
+            res.header('X-Total-Count', contador);
             logger.info(`ProductScope: getProductCommProduct ok`);
-            return res.json(data);
-       }
-       else{
-            logger.warn(`ProductScope: getProductCommProduct: Datos no encontrados`);
-            return res.status(404).json({message: "Datos no encontrados."})
-       }
-   })
-  .catch( (error)=>{
-        logger.error(`ProductScope: getProductCommProduct error: ${error.message}`);
-        res.json({error:error.message});
-   });
+            return res.json(resultado);
+        }
+        else{
+            let mensaje="Datos no encontrados";
+            logger.warn(`ProductScope: getProductCommProduct: ${mensaje}`);
+            throw new BaseException(`${mensaje}`,404,"ProductScope: getProductCommProduct");
+        }
+    
+    } catch (error) {
+        logger.error(`ProductScope: getProducts error: ${error}`);
+        throw new BaseException(`${error}`,404,"ProductScope: getProductCommProduct");
+
+    }
 }
 
 //Lista de Productos por tipo 
 const getAllProductsCommProduct= async (req:Request,res:Response) => {
-    let pageAsNumber:any=req.query.page;
-    let sizeAsNumber:any=req.query.size;
-    pageAsNumber=Number.parseInt(pageAsNumber);
-    sizeAsNumber=Number.parseInt(sizeAsNumber);
-    let page=0;
-    let size=10;
+    try{
+        let pageAsNumber:any=req.query.page;
+        let sizeAsNumber:any=req.query.size;
+        pageAsNumber=Number.parseInt(pageAsNumber);
+        sizeAsNumber=Number.parseInt(sizeAsNumber);
+        let page=0;
+        let size=10;
 
-    let where:any={};
+        let where:any={};
 
-    let product_type_id:any= (req.query.product_type_id)?.toString();
-    let _product_type_code:any= req.query.product_type_code;
-    let apply_eol:any= req.query.apply_eol;
-    let apply_ius:any= req.query.apply_ius;
+        let product_type_id:any= (req.query.product_type_id)?.toString();
+        let _product_type_code:any= req.query.product_type_code;
+        let apply_eol:any= req.query.apply_eol;
+        let apply_ius:any= req.query.apply_ius;
 
-    if(!Number.isNaN(pageAsNumber)&& pageAsNumber>0){
-        page=pageAsNumber;
-    }
-
-    if(!Number.isNaN(sizeAsNumber) && sizeAsNumber>0 && sizeAsNumber<10){
-        size=sizeAsNumber;
-    }
-
-    if(_product_type_code)
-    {
-        const ptc = await Product_Type.findOne({
-            where:{product_type_code:_product_type_code}
-        })
-        if(ptc){
-            product_type_id=ptc.product_type_id
+        if(!Number.isNaN(pageAsNumber)&& pageAsNumber>0){
+            page=pageAsNumber;
         }
-    }
-    //https://www.tutorialspoint.com/typeorm/typeorm_tutorial.pdf
-    if(product_type_id){
-        where.product_type_id= product_type_id
-    }
-    if(apply_eol){
-        where.apply_eol= apply_eol
-    }
-    if(apply_ius){
-        where.apply_ius= apply_ius
-    }
-    let pageSize=(page*size);
-    let [count]:any = await Product.findAndCount({
-        where,
-        take:size,
-        skip:pageSize
-    });
-    let contador:any=count.length;
-    res.header('X-Total-Count', contador);
-   
-   await Product.find({ 
-        where,
-        take:size,
-        skip:page*size,
-        relations: {
-            product_Scopes:true,
-            product_type:true
-        }, 
-        order: {
-            product_name: 'ASC',
-            product_code: 'ASC'
+
+        if(!Number.isNaN(sizeAsNumber) && sizeAsNumber>0 && sizeAsNumber<10){
+            size=sizeAsNumber;
         }
-   })
-   .then( (data)=>{
-        if (data.length===0) 
-        { 
-            logger.warn(`ProductScope: getAllProductsCommProduct: Datos no encontrados`);
-            return res.status(404).json({message: "Datos no encontrados."})
+
+        if(_product_type_code)
+        {
+            const ptc = await Product_Type.findOne({
+                where:{product_type_code:_product_type_code}
+            })
+            if(ptc){
+                product_type_id=ptc.product_type_id
+            }
+        }
+        //https://www.tutorialspoint.com/typeorm/typeorm_tutorial.pdf
+        if(product_type_id){
+            where.product_type_id= product_type_id
+        }
+        if(apply_eol){
+            where.apply_eol= apply_eol
+        }
+        if(apply_ius){
+            where.apply_ius= apply_ius
+        }
+        //llamo al Service
+        const resultado = await _productService.getAllProductsCommProduct(where,page,size);
+
+        if(resultado.length>0){
+            let contador:any=resultado.length;
+            res.header('X-Total-Count', contador);
+            logger.info(`ProductScope: getAllProductsCommProduct ok`);
+            return res.json(resultado);
         }
         else{
-            logger.info(`ProductScope: getAllProductsCommProduct ok`);
-            return res.status(200).json(data);
+            let mensaje="Datos no encontrados";
+            logger.warn(`ProductScope: getAllProductsCommProduct: ${mensaje}`);
+            throw new BaseException(`${mensaje}`,404,"ProductScope: getAllProductsCommProduct");
         }
-   })
-  .catch( (error)=>{
-        logger.error(`ProductScope: getAllProductsCommProduct error: ${error.message}`);
-        res.json({error:error.message});
-   });
+    
+    } catch (error) {
+        logger.error(`ProductScope: getAllProductsCommProduct error: ${error}`);
+        throw new BaseException(`${error}`,404,"ProductScope: getAllProductsCommProduct");
+
+    }
 }
 
 
