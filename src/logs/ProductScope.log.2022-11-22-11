@@ -1,0 +1,25 @@
+[2022-11-22T11:06:28.961] [INFO] default - ProductScope: getProducts ok
+[2022-11-22T11:06:50.208] [WARN] default - ProductScope: getProducts: No se pudieron obtener productos
+[2022-11-22T11:06:50.211] [ERROR] default - ProductScope: getProducts error: No se pudieron obtener productos.
+[2022-11-22T11:09:00.157] [WARN] default - addSubscriptionCommProduct: Fecha de inicio mayor a la fecha de fin
+[2022-11-22T11:10:42.380] [WARN] default - ProductScope: addSubscriptionCommProduct: El Item no pudo ser creado. - ERROR MIO
+[2022-11-22T11:12:30.650] [ERROR] default - ProductScope: addSubscriptionCommProduct error: ERROR MIO
+[2022-11-22T11:12:56.435] [ERROR] default - ProductScope: addSubscriptionCommProduct error: sdsadasdada
+[2022-11-22T11:12:58.483] [ERROR] default - ProductScope: addSubscriptionCommProduct error: sdsadasdada
+[2022-11-22T11:13:50.037] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T11:13:50.039] [ERROR] default - ProductScope: addSubscriptionCommProduct error: Ya existe una suscripción para el producto y suscriptor informados.
+[2022-11-22T11:14:09.112] [WARN] default - addSubscriptionCommProduct: Fecha de inicio mayor a la fecha de fin
+[2022-11-22T11:14:09.114] [ERROR] default - ProductScope: addSubscriptionCommProduct error: Fecha de inicio mayor a la fecha de fin
+[2022-11-22T11:16:14.808] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T11:16:14.811] [ERROR] default - ProductScope: addSubscriptionCommProduct error: Ya existe una suscripción para el producto y suscriptor informados.
+[2022-11-22T11:16:44.434] [INFO] default - ProductScope: addSubscriptionCommProduct ok
+[2022-11-22T11:33:50.798] [WARN] default - ProductScope: createProductCommProduct - Producto ya existente 21220293
+[2022-11-22T11:34:06.346] [INFO] default - ProductScope: createProductCommProduct ok
+[2022-11-22T11:34:19.150] [WARN] default - ProductScope: createProductCommProduct - Producto ya existente 21220294
+[2022-11-22T11:34:24.808] [WARN] default - ProductScope: createProductCommProduct - Producto ya existente 21220293
+[2022-11-22T11:45:53.515] [ERROR] default - ProductScope: createProductScopeCommProduct error: QueryFailedError: invalid input syntax for type date: "0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN"
+[2022-11-22T11:48:37.528] [INFO] default - ProductScope: createProductScopeCommProduct ok
+[2022-11-22T11:49:04.432] [ERROR] default - ProductScope: createProductScopeCommProduct error: QueryFailedError: invalid input syntax for type date: "0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN"
+[2022-11-22T11:52:54.012] [ERROR] default - ProductScope: createProductScopeCommProduct error: QueryFailedError: invalid input syntax for type date: "0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN"
+[2022-11-22T11:56:57.975] [INFO] default - ProductScope: createProductScopeCommProduct ok
+[2022-11-22T11:56:59.962] [INFO] default - ProductScope: createProductScopeCommProduct ok

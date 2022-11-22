@@ -13,7 +13,7 @@ var moment = require('moment');
 
 export default class ProductService {
     
-    async getProducts(unProductID:any,page:any,size:any) {
+    getProducts=async(unProductID:any,page:any,size:any)=>{
         return await Product.find({
             where: { 
                 product_id: unProductID
@@ -43,7 +43,7 @@ export default class ProductService {
         return id;
     }
 
-    async getSubscriberSuscriptionCommProduct(where:any,page:any,size:any) {
+    getSubscriberSuscriptionCommProduct=async(where:any,page:any,size:any)=>{
         return await Product_Subscription.find({ 
             where,
             take:size,
@@ -113,4 +113,104 @@ export default class ProductService {
             }
        })
     }
+
+    verificarExistenciaSuscripcion=async (subscriber_id:any,product_id:any)=> {
+        //Verificamos si la relacion ya existe
+        let existe=false;
+        await Product_Subscription.findOne({
+            where: {
+                subscriber_id: subscriber_id,
+                product_id: product_id,
+                is_active:true
+            }
+            }).then( (data:any)=>{
+                if(data){
+                    existe=true;
+                }
+            })
+            .catch( (error)=>{
+                console.log(`error: ${error}`);
+            });
+            return existe;
+    }
+
+    addSubscriptionCommProduct=async(subscriber_id:any,product_id:any,validaStartDate:any,validaFinishDate:any,account_executive_ref_id:any,fechaHoy:any,email:any)=>{
+        const ps=new Product_Subscription();
+        ps.subscriber_id=subscriber_id,
+        ps.product_id=product_id,   
+        ps.subscription_start_date=validaStartDate,
+        ps.subscription_finish_date=validaFinishDate,
+        ps.is_active=true,//true
+        ps.account_executive_ref_id=account_executive_ref_id,
+        ps.creation_date=fechaHoy,// yyyy-mm-dd
+        ps.creation_user=email
+        await ps.save();
+        return ps;
+    }
+
+    verificarExistenciaProductType=async (product_type_code:any)=> {
+        //Verificamos si la relacion ya existe
+        let datos:any;
+        await Product_Type.findOne(
+        {
+            where: {product_type_code}
+        }).then( (data:any)=>{
+            if(data){
+                datos=data;
+            }
+        })
+        .catch( (error)=>{
+            console.log(`error: ${error}`);
+        });
+        return datos;
+    }
+
+    createProductCommProduct=async(product_code:any,product_name:any,product_type_id:any,apply_eol:any,apply_ius:any)=>{
+        const producto=new Product();
+        producto.product_code=product_code,
+        producto.product_name=product_name,   
+        producto.product_type_id=product_type_id,
+        producto.apply_eol=apply_eol,
+        producto.apply_ius=apply_ius
+
+        await producto.save();
+        return producto;
+    }
+
+    verificarExistenciaProductScope=async (product_id:any)=> {
+        //Verificamos si la relacion ya existe
+        let existe=false;
+
+        await Product_Scope.findOne({
+            where: {
+                product_id:product_id,
+                is_active:true
+            }
+        }).then( (data:any)=>{
+            if(data){
+                existe=true;
+            }
+        })
+        .catch( (error)=>{
+            console.log(`error: ${error}`);
+        });
+        return existe;
+    }
+
+    createProductScopeCommProduct=async(product_id:any,product_max_access_count:any,product_max_user_count:any,scope_finish_date:any)=>{
+        let fechaHoy= moment();
+
+        const prodScope=new Product_Scope();
+        prodScope.product_id=product_id,
+        prodScope.product_max_access_count=product_max_access_count,   
+        prodScope.product_max_user_count=product_max_user_count,
+        prodScope.scope_finish_date=scope_finish_date,
+        prodScope.scope_start_date=fechaHoy,
+        prodScope.creation_date=fechaHoy
+        console.log(prodScope);
+        await prodScope.save();
+        return prodScope;
+    }
+
+    
 }

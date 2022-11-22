@@ -1,0 +1,16 @@
+[2022-11-22T10:12:41.698] [INFO] default - ProductScope: addSubscriptionCommProduct ok
+[2022-11-22T10:12:51.729] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: [object Object]
+[2022-11-22T10:15:31.854] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T10:16:54.993] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados.: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T10:26:39.752] [INFO] default - ProductScope: addSubscriptionCommProduct ok
+[2022-11-22T10:26:43.136] [INFO] default - ProductScope: addSubscriptionCommProduct ok
+[2022-11-22T10:27:23.455] [INFO] default - ProductScope: addSubscriptionCommProduct ok
+[2022-11-22T10:32:11.443] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados.: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T10:33:55.222] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados.: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T10:34:52.817] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados.: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T10:41:32.773] [WARN] default - ProductScope: addSubscriptionCommProduct: El Item no pudo ser creado. - Error: DataSource is not set for this entity.
+[2022-11-22T10:48:38.118] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados.: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T10:50:53.697] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados.: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T10:51:52.358] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T10:53:36.037] [WARN] default - addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: 785dc1a3-3731-4e64-91ec-31c8e5be9603 - 90776320-27c3-4dbe-99dc-585a16566c2d
+[2022-11-22T10:57:21.645] [WARN] default - addSubscriptionCommProduct: Fecha de inicio mayor a la fecha de fin

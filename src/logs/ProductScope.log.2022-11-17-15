@@ -1,8 +1,0 @@
-[2022-11-17T15:22:49.792] [ERROR] default - ProductScope: getProducts error: No se pudieron obtener productos.
-[2022-11-17T15:23:12.733] [ERROR] default - ProductScope: getProducts error: No se pudieron obtener productos.
-[2022-11-17T15:24:22.907] [INFO] default - ProductScope: getProducts ok
-[2022-11-17T15:36:05.920] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
-[2022-11-17T15:36:34.184] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
-[2022-11-17T15:36:41.733] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
-[2022-11-17T15:48:45.764] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
-[2022-11-17T15:54:11.845] [INFO] default - ProductScope: getSubscriberSuscriptionCommProduct ok
