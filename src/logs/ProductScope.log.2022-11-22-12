@@ -1,5 +1,0 @@
-[2022-11-22T12:00:13.877] [INFO] default - ProductScope: createProductScopeCommProduct ok
-[2022-11-22T12:00:15.432] [INFO] default - ProductScope: createProductScopeCommProduct ok
-[2022-11-22T12:00:40.378] [INFO] default - ProductScope: createProductScopeCommProduct ok
-[2022-11-22T12:01:29.117] [ERROR] default - ProductScope: createProductScopeCommProduct error: QueryFailedError: invalid input syntax for type date: "0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN"
-[2022-11-22T12:03:43.487] [ERROR] default - ProductScope: createProductScopeCommProduct error: QueryFailedError: invalid input syntax for type date: "0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN"

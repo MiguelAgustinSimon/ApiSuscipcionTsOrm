@@ -392,7 +392,7 @@ const addSubscriptionCommProduct = async (req:Request,res:Response) => {
             }
     
             //Verificamos si la relacion ya existe
-            const existeSuscripcion= await _productService.verificarExistenciaSuscripcion(subscriber_id,product_id);
+            const existeSuscripcion:Product_Subscription= await _productService.verificarExistenciaSuscripcion(subscriber_id,product_id);
             //Si ya existe devolvemos el resultado
             if(existeSuscripcion){
                 logger.warn(`addSubscriptionCommProduct: Ya existe una suscripción para el producto y suscriptor informados: ${subscriber_id} - ${product_id}`);
@@ -530,85 +530,57 @@ const createProductScopeCommProduct = async (req:Request,res:Response) => {
 //Desactivar una Suscripcion
 const disableSubscriptionCommProduct = async (req:Request,res:Response) => {
     try{
-    const {subscriber_id,product_id}=req.params;
-    let req2=await parseJwt(req.token); 
+        const {subscriber_id,product_id}=req.params;
+        let req2=await parseJwt(req.token); 
 
-    let fechaHoy = moment();  
-    if(!product_id || !subscriber_id){
-        logger.warn(`disableSubscriptionCommProduct: No se ingreso product_id y/o subscriber_id`);
-        return res.status(400).json({message: "No se ingreso product_id y/o subscriber_id."})
-    }
+        if(!product_id || !subscriber_id){
+            console.log("entro aca 0");
 
-    if(NullChecker(subscriber_id, product_id)){
-        logger.warn(`ProductScope: disableSubscriptionCommProduct: Peticion invalida`);
-        return res.status(400).json({message: 'Peticion invalida'});
-    }
-    if(!UUIDChecker(subscriber_id)){
-        logger.warn(`ProductScope: disableSubscriptionCommProduct: Ingrese un UUID valido: ${subscriber_id}`);
-        return res.status(400).json({message: 'Ingrese un UUID valido'});
-    }
+            logger.warn(`disableSubscriptionCommProduct: No se ingreso product_id y/o subscriber_id`);
+            throw new BaseException(`No se ingreso product_id y/o subscriber_id`,400,"ProductScope: disableSubscriptionCommProduct");
+        }
 
-    await Product_Subscription.findOne({
-       where:{subscriber_id:subscriber_id, product_id:product_id, is_active:true}
-    }).then(async modeloProductoSuscripcion=>{
-        if(modeloProductoSuscripcion){
-            modeloProductoSuscripcion.is_active=false,
-            modeloProductoSuscripcion.modification_date=fechaHoy,
-            modeloProductoSuscripcion.modification_user=req2.idpData.email
-                await Product_Subscription.update({product_subscription_id:modeloProductoSuscripcion.product_subscription_id}, modeloProductoSuscripcion)
-                .then(async resultado=>{
-                    logger.info(`ProductScope: disableSubscriptionCommProduct ok`);
-                        if(resultado.affected!>0){
-                            const _ps = await Product_Subscription.findOne({
-                                    where:{subscriber_id:subscriber_id, product_id:product_id}
-                            })
-                            if(_ps){
-                                return res.status(201).json({
-                                    //ok:true,
-                                    message:'Producto actualizado exitosamente',
-                                    result:_ps
-                                });
-                            }
-                        }
-                        else{
-                            logger.warn(`ProductScope: disableSubscriptionCommProduct: La suscripcion no pudo ser modificada`);
-                            return res.status(400).json({
-                                ok:false,
-                                message:'La suscripcion no pudo ser modificada'
-                            })
-                        }
-                }).catch(error=>{
-                    logger.error(`ProductScope: disableSubscriptionCommProduct error: ${error.message}`);
-                    return res.status(404).json({
-                        ok:false,
-                        mensaje:error.message,
-                        error:error.message,
+        if(NullChecker(subscriber_id, product_id)){
+            console.log("entro aca 1");
+
+            logger.warn(`ProductScope: disableSubscriptionCommProduct: Peticion invalida`);
+            throw new BaseException(`Peticion invalida`,400,"ProductScope: disableSubscriptionCommProduct");
+
+        }
+        if(!UUIDChecker(subscriber_id) || !UUIDChecker(product_id)){
+            console.log("entro aca 2");
+            logger.warn(`ProductScope: disableSubscriptionCommProduct: Ingrese un UUID valido: ${subscriber_id} -  ${product_id}`);
+            throw new BaseException(`Ingrese un UUID valido`,400,"ProductScope: disableSubscriptionCommProduct");
+        }
+        
+
+        const existeSuscripcion:Product_Subscription= await _productService.verificarExistenciaSuscripcion(subscriber_id,product_id);
+        if(existeSuscripcion){
+
+            let psUpdate= await _productService.disableSubscriptionCommProduct(existeSuscripcion.product_subscription_id,req2.idpData.email);
+            
+            if(psUpdate){
+                const _psInactiva:Product_Subscription= await _productService.traerSuscripcionInactiva(subscriber_id,product_id);
+                if(_psInactiva){
+                    return res.status(201).json({
+                        //ok:true,
+                        message:'Producto actualizado exitosamente',
+                        result:_psInactiva
                     });
-                });           
+                }else{
+                    logger.warn(`ProductScope: disableSubscriptionCommProduct: La suscripcion no pudo ser modificada`);
+                    throw new BaseException(`La suscripcion no pudo ser modificada`,400,"ProductScope: disableSubscriptionCommProduct");
+
+                }
+            }else{
+                logger.warn(`ProductScope: disableSubscriptionCommProduct: La suscripcion no pudo ser modificada`);
+                throw new BaseException(`La suscripcion no pudo ser modificada`,400,"ProductScope: disableSubscriptionCommProduct");
+            }
         }
-        else{
-            logger.warn(`ProductScope: disableSubscriptionCommProduct: Suscripcion no encontrada`);
-            return res.status(400).json({
-                ok:false,
-                message:'Suscripcion no encontrada'
-            });
-        }
-    }).catch(error=>{
-            logger.error(`ProductScope: disableSubscriptionCommProduct error: ${error.message}`);
-            res.status(404).json({
-                ok:false,
-                mensaje:error.message,
-                error:error.message,
-            });
-        }); 
     }
     catch (error) {
         logger.error(`ProductScope: disableSubscriptionCommProduct error: ${error}`);
-        return res.status(400).json({
-            ok:false,
-            mensaje:error,
-            error:error
-        });
+        res.json({error:error});
     }
 } // fin disableSubscriptionCommProduct
 
@@ -646,81 +618,37 @@ const updateProductCommProduct = async (req:Request,res:Response) => {
         }    
     
         //Verificar si existe un producto con el id de producto informado
-        const _product = await Product.findOne({where})
+        const _product = await _productService.obtenerProducto(where);
         if(!_product){
             logger.warn(`ProductScope: updateProductCommProduct - No existe el producto con el id de producto informado ${product}`);
-            return res.status(400).json({message: "No existe el producto con el id de producto informado"});
+            throw new BaseException(`No existe el producto con el id de producto informado`,400,"ProductScope: updateProductCommProduct");
         }
     
-          //Verificar si existe un ProductType con product_type_code informado
-            const _productType = await Product_Type.findOne(
-            {
-                where: {product_type_code}
-            })
-            if(!_productType){
-                logger.warn(`ProductScope: updateProductCommProduct - product type code inexistente ${product_type_code}`);
-                return res.status(400).json({message: "product type code inexistente"});
-            }
+        //Verificar si existe un ProductType con product_type_code informado
+        const _productType = await _productService.verificarExistenciaProductType(product_type_code)
+        if(!_productType){
+            logger.warn(`ProductScope: updateProductCommProduct - product type code inexistente ${product_type_code}`);
+            throw new BaseException(`product type code inexistente`,400,"ProductScope: updateProductCommProduct");
+        }
         
-            let fechaHoy= moment();
-            await Product.findOne({
-                where
-            }).then(async modeloProducto=>{
-                if(modeloProducto){
-                    //console.log(modeloProducto);
-                    modeloProducto.product_code=product_code,
-                    modeloProducto.product_name=product_name,
-                    modeloProducto.product_type_id=_productType.product_type_id,
-                    modeloProducto.apply_eol=apply_eol,
-                    modeloProducto.apply_ius=apply_ius,
-                    modeloProducto.modification_date=fechaHoy;
-                    
-                    await Product.update({product_id:modeloProducto.product_id},modeloProducto)
-                    .then(async resultado=>{
-                        logger.info(`ProductScope: updateProductCommProduct ok`);
-                        if(resultado.affected!>0){
-                            const _p = await Product.findOne({
-                                    where:{product_id:modeloProducto.product_id}
-                            })
-                            if(_p){
-                                return res.status(201).json({
-                                    //ok:true,
-                                    message:'Producto actualizado exitosamente',
-                                    result:_p
-                                });
-                            }
-                        }
-                        else{
-                            logger.warn(`ProductScope: updateProductCommProduct: El Producto no pudo ser modificado`);
-                            return res.status(400).json({
-                                ok:false,
-                                message:'El Producto no pudo ser modificado'
-                            })
-                        }
-                    }).catch(error=>{
-                        logger.error(`ProductScope: updateProductCommProduct error: ${error.message}`);
-                        return res.status(404).json({
-                            ok:false,
-                            mensaje:error.message,
-                            error:error.message,
-                        });
-                    }); 
-                }
-                else{
-                    logger.warn(`ProductScope: updateProductCommProduct: Producto no encontrado`);
-                    return res.status(400).json({
-                        ok:false,
-                        message:'Producto no encontrado'
-                    });
-                }
-            }).catch(error=>{
-                    logger.error(`ProductScope: updateProductCommProduct error: ${error.message}`);
-                    res.status(404).json({
-                        ok:false,
-                        mensaje:error.message,
-                        error:error.message,
-                    });
-                }); 
+        let prodEditado=await _productService.updateProductCommProduct(product_code,product_name,_productType.product_type_id,apply_eol,apply_ius);
+        if(prodEditado){
+            const _productId= await _productService.consultarExistenciaProducto(product_id);
+            if(_productId){
+                return res.status(201).json({
+                    //ok:true,
+                    message:'Producto actualizado exitosamente',
+                    result:_productId
+                });
+            }else{
+                logger.warn(`ProductScope: updateProductCommProduct: La suscripcion no pudo ser modificada`);
+                throw new BaseException(`La suscripcion no pudo ser modificada`,400,"ProductScope: updateProductCommProduct");
+
+            }
+        }else{
+            logger.warn(`ProductScope: updateProductCommProduct: La suscripcion no pudo ser modificada`);
+            throw new BaseException(`La suscripcion no pudo ser modificada`,400,"ProductScope: updateProductCommProduct");
+        }
     }catch (error) {
         logger.error(`ProductScope: updateProductCommProduct error: ${error}`);
         res.status(404).json({

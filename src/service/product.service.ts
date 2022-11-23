@@ -1,4 +1,4 @@
-import {Raw, Repository, UpdateResult } from "typeorm";
+import {Any, Raw, Repository, UpdateResult } from "typeorm";
 import { Request,Response } from "express";
 const UUIDChecker = require("../middlewares/UUIDChecker");
 const NullChecker = require("../middlewares/NullChecker");
@@ -43,6 +43,21 @@ export default class ProductService {
         return id;
     }
 
+    obtenerProducto = async (where:any) => {
+        //sirve para devolver el product_id en getSubscriberSuscriptionCommProduct
+        let datos:any;
+        await Product.findOne({
+            where: where
+          })
+        .then( (data:any)=>{
+            datos=data;
+        })
+        .catch( (error)=>{
+                console.log(`error: ${error}`);
+        });
+        return datos;
+    }
+
     getSubscriberSuscriptionCommProduct=async(where:any,page:any,size:any)=>{
         return await Product_Subscription.find({ 
             where,
@@ -58,18 +73,18 @@ export default class ProductService {
 
     consultarExistenciaProducto = async (product_id:any) => {
         //sirve para devolver el product_id en getSubscriberSuscriptionCommProduct
-        let id=0;
+        let datos:any;
+
         await Product.findOne({
             where: {product_id} 
           })
         .then( (data:any)=>{
-            id=data.product_id;
+            datos=data
         })
         .catch( (error)=>{
                 console.log(`error: ${error}`);
         });
-        console.log(id);
-        return id;
+        return datos;
     }
 
     getBySuscriptionProductIdCommProduct=async (where:any,page:any,size:any)=> {
@@ -116,7 +131,7 @@ export default class ProductService {
 
     verificarExistenciaSuscripcion=async (subscriber_id:any,product_id:any)=> {
         //Verificamos si la relacion ya existe
-        let existe=false;
+        let datos:any;
         await Product_Subscription.findOne({
             where: {
                 subscriber_id: subscriber_id,
@@ -125,13 +140,35 @@ export default class ProductService {
             }
             }).then( (data:any)=>{
                 if(data){
-                    existe=true;
+                    datos=data;
+
                 }
             })
             .catch( (error)=>{
                 console.log(`error: ${error}`);
             });
-            return existe;
+            return datos;
+    }
+
+    traerSuscripcionInactiva=async (subscriber_id:any,product_id:any)=> {
+        //Verificamos si la relacion ya existe
+        let datos:any;
+        await Product_Subscription.findOne({
+            where: {
+                subscriber_id: subscriber_id,
+                product_id: product_id,
+                is_active:false
+            }
+            }).then( (data:any)=>{
+                if(data){
+                    datos=data;
+
+                }
+            })
+            .catch( (error)=>{
+                console.log(`error: ${error}`);
+            });
+            return datos;
     }
 
     addSubscriptionCommProduct=async(subscriber_id:any,product_id:any,validaStartDate:any,validaFinishDate:any,account_executive_ref_id:any,fechaHoy:any,email:any)=>{
@@ -210,6 +247,34 @@ export default class ProductService {
         console.log(prodScope);
         await prodScope.save();
         return prodScope;
+    }
+
+    disableSubscriptionCommProduct=async(product_subscription_id:any,email:any)=>{
+        let fechaHoy= moment();
+
+        const ps=new Product_Subscription();
+        ps.is_active=false,
+        ps.modification_date=fechaHoy,
+        ps.modification_user=email
+
+        let disable:any=await Product_Subscription.update({product_subscription_id:product_subscription_id}, ps);
+        return disable;
+    }
+
+    updateProductCommProduct=async(product_code:any,product_name:any,product_type_id:any,apply_eol:any,apply_ius:any)=>{
+        let fechaHoy= moment();
+
+        const modeloProducto=new Product();
+        modeloProducto.product_code=product_code,
+        modeloProducto.product_name=product_name,
+        modeloProducto.product_type_id=product_type_id,
+        modeloProducto.apply_eol=apply_eol,
+        modeloProducto.apply_ius=apply_ius,
+        modeloProducto.modification_date=fechaHoy;
+
+        let p:any=await Product.update({product_id:modeloProducto.product_id},modeloProducto)
+
+        return p;
     }
 
     

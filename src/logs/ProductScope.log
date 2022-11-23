@@ -1,18 +1,8 @@
-[2022-11-22T16:15:29.584] [INFO] default - ProductScope: createProductScopeCommProduct ok
-[2022-11-22T16:15:33.785] [WARN] default - ProductScope: createProductScopeCommProduct - Ya existe un alcance de producto activo para el id producto informado 8b4165f9-eb85-4ae6-b75e-760cb3a68c9b
-[2022-11-22T16:17:13.393] [WARN] default - ProductScope: createProductScopeCommProduct - Ya existe un alcance de producto activo para el id producto informado 8b4165f9-eb85-4ae6-b75e-760cb3a68c9b
-[2022-11-22T16:17:59.452] [ERROR] default - ProductScope: createProductScopeCommProduct error: sdfsfdfs
-[2022-11-22T16:18:34.697] [ERROR] default - ProductScope: createProductScopeCommProduct error: sdfsfdfs
-[2022-11-22T16:19:48.049] [ERROR] default - ProductScope: createProductScopeCommProduct error: apply_eol/apply_ius no informado
-[2022-11-22T16:26:19.288] [ERROR] default - ProductScope: addSubscriptionCommProduct error: apply_eol/apply_ius no informado
-[2022-11-22T16:26:39.230] [ERROR] default - ProductScope: addSubscriptionCommProduct error: apply_eol/apply_ius no informado
-[2022-11-22T16:28:15.548] [WARN] default - ProductScope: createProductScopeCommProduct - Ya existe un alcance de producto activo para el id producto informado 8b4165f9-eb85-4ae6-b75e-760cb3a68c9b
-[2022-11-22T16:28:15.553] [ERROR] default - ProductScope: addSubscriptionCommProduct error: Alcance de producto existente para el id producto informado
-[2022-11-22T16:28:50.874] [WARN] default - ProductScope: createProductScopeCommProduct - Ya existe un alcance de producto activo para el id producto informado 8b4165f9-eb85-4ae6-b75e-760cb3a68c9b
-[2022-11-22T16:28:50.879] [ERROR] default - ProductScope: addSubscriptionCommProduct error: Ya existe un alcance de producto activo para el id producto informado
-[2022-11-22T16:31:35.577] [ERROR] default - ProductScope: addSubscriptionCommProduct error: Error: DataSource is not set for this entity.
-[2022-11-22T16:31:44.647] [WARN] default - ProductScope: createProductScopeCommProduct - Ya existe un alcance de producto activo para el id producto informado 8b4165f9-eb85-4ae6-b75e-760cb3a68c9b
-[2022-11-22T16:31:44.649] [ERROR] default - ProductScope: addSubscriptionCommProduct error: Ya existe un alcance de producto activo para el id producto informado
-[2022-11-22T16:32:12.225] [ERROR] default - ProductScope: addSubscriptionCommProduct error: QueryFailedError: duplicate key value violates unique constraint "product_scope_code_key"
-[2022-11-22T16:38:24.729] [WARN] default - ProductScope: createProductScopeCommProduct - Ya existe un alcance de producto activo para el id producto informado 8b4165f9-eb85-4ae6-b75e-760cb3a68c9b
-[2022-11-22T16:38:24.733] [ERROR] default - ProductScope: addSubscriptionCommProduct error: Ya existe un alcance de producto activo para el id producto informado
+[2022-11-23T11:13:26.161] [WARN] default - ProductScope: disableSubscriptionCommProduct: Ingrese un UUID valido: 785dc1a3-3731-4e64-91ec-31c8e5be9603 -  90776320-27c3-4dbe-99dc-585a16566c2
+[2022-11-23T11:13:52.435] [WARN] default - ProductScope: disableSubscriptionCommProduct: Ingrese un UUID valido: 785dc1a3-3731-4e64-91ec-31c8e5be9603 -  90776320-27c3-4dbe-99dc-585a16566c2
+[2022-11-23T11:13:52.439] [ERROR] default - ProductScope: disableSubscriptionCommProduct error: Ingrese un UUID valido
+[2022-11-23T11:15:11.722] [WARN] default - ProductScope: disableSubscriptionCommProduct: Ingrese un UUID valido: 785dc1a3-3731-4e64-91ec-31c8e5be9603 -  90776320-27c3-4dbe-99dc-585a16566c2
+[2022-11-23T11:16:44.634] [ERROR] default - ProductScope: disableSubscriptionCommProduct error: asdadasdasd
+[2022-11-23T11:17:38.604] [ERROR] default - ProductScope: disableSubscriptionCommProduct error: asdadasdasd
+[2022-11-23T11:18:04.715] [WARN] default - ProductScope: disableSubscriptionCommProduct: Ingrese un UUID valido: 785dc1a3-3731-4e64-91ec-31c8e5be9603 -  90776320-27c3-4dbe-99dc-585a16566c2
+[2022-11-23T11:18:04.719] [ERROR] default - ProductScope: disableSubscriptionCommProduct error: Ingrese un UUID valido
