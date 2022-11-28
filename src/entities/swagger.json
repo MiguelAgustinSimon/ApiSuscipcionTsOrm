@@ -1,0 +1,659 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"description": "Esta es una api para las entidades de las Suscripciones",
+		"version": "1.0.0",
+		"title": "Swagger API_Suscripciones",
+		"termsOfService": "http://swagger.io/terms/",
+		"contact": {
+			"email": "apiteam@swagger.io"
+		},
+		"license": {
+			"name": "Apache 2.0",
+			"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+		}
+	},
+	"components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [{
+        "bearerAuth": []
+    }],
+	"servers":[{
+		"url": "https://accounts.errepar.com/customers-and-products-api/api",
+		"description": "Server publico (Testing)"
+	  },{
+		"url": "http://localhost:3002/api",
+		"description": "Server testing local"
+	  }],
+	"tags": [
+		{
+			"name": "Products",
+			"description": "Obten todo sobre los datos de suscripciones"
+		}
+	],
+	"paths": {
+		"/getProducts": {
+			"get": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Obtener los productos",
+				"description": "Obtener los Productos",
+				"operationId": "getProducts",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+				{
+					"in": "query",
+					"name": "page",
+					"description": "Establece cuantos registros deben saltearse.",
+					"required": false,
+					"type": "integer"
+				},
+				{
+					"in": "query",
+					"name": "size",
+					"description": "Establece el limite de registros que se deben devolver",
+					"required": false,
+					"type": "integer"
+				}
+				],
+				"responses": {
+					"200": {
+						"description": "Retorna los registros de los Productos."
+					}
+				}
+			}
+		},
+		"/getSubscriberSuscriptionCommProduct/{subscriber_id}?": {
+			"get": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Obtener todas las suscripciones por Suscriptor",
+				"description": "Obtener todas las suscripciones por Suscriptor",
+				"operationId": "getSubscriberSuscriptionCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "subscriber_id",
+						"in": "path",
+						"description": "UUID del suscriptor que se desea actualizar.",
+						"required": true,
+						"type": "string",
+						"format": "uuid"
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"description": "Establece cuantos registros deben saltearse.",
+						"required": false,
+						"type": "integer"
+					},
+					{
+						"in": "query",
+						"name": "size",
+						"description": "Establece el limite de registros que se deben devolver",
+						"required": false,
+						"type": "integer"
+					},
+					{
+						"in": "query",
+						"name": "subscription_start_date",
+						"description": "Establece la fecha Desde",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "subscription_finish_date",
+						"description": "Establece la fecha Hasta",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"in": "query",
+						"name": "is_active",
+						"description": "Establece si la suscripcion esta activa",
+						"required": false,
+						"type": "boolean"
+					},
+					{
+						"in": "query",
+						"name": "product_id",
+						"description": "Especifica el UUID del producto",
+						"required": false,
+						"type": "uuid"
+					},
+					{
+						"in": "query",
+						"name": "product_code",
+						"description": "Especifica el ID del producto",
+						"required": false,
+						"type": "integer"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Retorna los registros."
+					},
+					"400": {
+						"description": "Ingrese un UUID valido."
+					},
+					"404": {
+						"description": "Datos no encontrados."
+					}
+				}
+			}
+		},
+		"/getBySuscriptionProductIdCommProduct/{product_id}?": {
+			"get": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Obtener todas las suscripciones por Producto",
+				"description": "Obtener todas las suscripciones por Producto",
+				"operationId": "getBySuscriptionProductIdCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "product_id",
+						"in": "path",
+						"description": "product_id del producto que se desea buscar.",
+						"required": true,
+						"type": "UUID"
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"description": "Establece cuantos registros deben saltearse.",
+						"required": false,
+						"type": "integer"
+					},
+					{
+						"in": "query",
+						"name": "size",
+						"description": "Establece el limite de registros que se deben devolver",
+						"required": false,
+						"type": "integer"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Retorna los registros."
+					},
+					"400": {
+						"description": "Ingrese un UUID valido."
+					},
+					"404": {
+						"description": "Datos no encontrados."
+					}
+				}
+			}
+		},
+		"/getProductCommProduct/{product_code}?": {
+			"get": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Obtener producto especifico",
+				"description": "Obtener producto especifico",
+				"operationId": "getProductCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "product_code",
+						"in": "path",
+						"description": "product_code del producto que se desea buscar.",
+						"required": true,
+						"type": "integer"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Retorna los registros."
+					},
+					"400": {
+						"description": "Ingrese un UUID valido."
+					},
+					"404": {
+						"description": "Datos no encontrados."
+					}
+				}
+			}
+		},
+		"/getAllProductsCommProduct": {
+			"get": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Obtener los productos por tipo ",
+				"description": "Obtener los Productos por tipo",
+				"operationId": "getAllProductsCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "product_type_id",
+						"in": "query",
+						"description": "product_type_id del producto que se desea buscar.",
+						"required": false,
+						"type": "integer"
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"description": "Establece cuantos registros deben saltearse.",
+						"required": false,
+						"type": "integer"
+					},
+					{
+						"in": "query",
+						"name": "size",
+						"description": "Establece el limite de registros que se deben devolver",
+						"required": false,
+						"type": "integer"
+					},
+					{
+						"name": "product_type_code",
+						"in": "query",
+						"description": "product_type_code del producto que se desea buscar.",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "apply_eol",
+						"in": "query",
+						"description": "Aplica apply_eol.",
+						"required": false,
+						"type": "boolean"
+					},
+					{
+						"name": "apply_ius",
+						"in": "query",
+						"description": "Aplica apply_ius.",
+						"required": false,
+						"type": "boolean"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Retorna los registros de los Productos."
+					}
+				}
+			}
+		},
+		"/addSubscriptionCommProduct": {
+			"post": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Asignar un producto a un suscriptor",
+				"description": "Vincula un producto con el suscriptor.",
+				"operationId": "addSubscriptionCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"description": "Crear la relacion entre producto y suscriptor",
+						"required": true,
+						"schema": {
+							"type": "object",
+							"properties": {
+								"product_id": {
+									"type": "string",
+									"format": "UUID"
+								},
+								"subscriber_id": {
+									"type": "string",
+									"format": "UUID"
+								},
+								"subscription_start_date": {
+									"type": "string"
+								},
+								"subscription_finish_date": {
+									"type": "string"
+								},
+								"account_executive_ref_id": {
+									"type": "integer"
+								},
+								"creation_user":{
+									"type": "string"
+								}
+							},
+							"xml": {
+								"name": "addSubscriptionCommProduct"
+							}
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "El Item no pudo ser creado."
+					},
+					"404": {
+						"description": "Error."
+					},
+					"200":{
+						"description": "Retorna el registro del Producto asociado."
+					}
+				}
+			}
+		},
+		"/createProductCommProduct": {
+			"post": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Dar de alta un Producto nuevo.",
+				"description": "Dar de alta un Producto nuevo.",
+				"operationId": "createProductCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"description": "Dar de alta un Producto nuevo.",
+						"required": true,
+						"schema": {
+							"type": "object",
+							"properties": {
+								"product_code": {
+									"type": "string"
+								},
+								"product_name": {
+									"type": "string"
+								},
+								"product_type_code": {
+									"type": "string"
+								},
+								"apply_eol": {
+									"type": "boolean"
+								},
+								"apply_ius": {
+									"type": "boolean"
+								}
+							},
+							"xml": {
+								"name": "createProductCommProduct"
+							}
+						}
+					}
+				],
+				"responses": {
+					"404": {
+						"description": "El Item no pudo ser creado."
+					},
+					"400": {
+						"description": "Error."
+					},
+					"201":{
+						"description": "Retorna el registro del Producto."
+					}
+				}
+			}
+		},
+		"/createProductScopeCommProduct": {
+			"post": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Dar de alta un Product Scope nuevo.",
+				"description": "Dar de alta un Product Scope nuevo.",
+				"operationId": "createProductScopeCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"description": "Dar de alta un Product Scope nuevo.",
+						"required": true,
+						"schema": {
+							"type": "object",
+							"properties": {
+								"product_id": {
+									"type": "string",
+									"format": "UUID"
+								},
+								"product_max_access_count": {
+									"type": "integer"
+								},
+								"product_max_user_count": {
+									"type": "integer"
+								},
+								"scope_finish_date": {
+									"type": "string"
+								}
+							},
+							"xml": {
+								"name": "createProductScopeCommProduct"
+							}
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "El Alcance de este producto no pudo ser creado."
+					},
+					"501": {
+						"description": "Error."
+					},
+					"201":{
+						"description": "Retorna el registro."
+					}
+				}
+			}
+		},
+		"/disableSubscriptionCommProduct/{subscriber_id}?/{product_id}?": {
+			"put": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Desactivar una Suscripcion",
+				"description": "Desactivar una Suscripcion",
+				"operationId": "disableSubscriptionCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "subscriber_id",
+						"in": "path",
+						"description": "UUID del suscriptor que se desea actualizar.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "product_id",
+						"in": "path",
+						"description": "UUID del producto que se desea actualizar.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "body",
+						"description": "Modificar una suscripcion.",
+						"required": true,
+						"schema": {
+							"type": "object",
+							"properties": {},
+							"xml": {
+								"name": "disableSubscriptionCommProduct"
+							}
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "'Peticion invalida' o 'Ingrese un UUID valido' o 'Suscripcion no encontrada'."
+					},
+					"404": {
+						"description": "Error."
+					},
+					"200": {
+						"description": "Retorna el registro actualizado."
+					}
+				}
+			}
+		},
+		"/updateProductCommProduct/{product}?": {
+			"put": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Modificar los datos un producto.",
+				"description": "Modificar los datos un producto.",
+				"operationId": "updateProductCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "product",
+						"in": "path",
+						"description": "Ingrese del producto que se desea actualizar.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "body",
+						"description": "Modificar una suscripcion.",
+						"required": true,
+						"schema": {
+							"type": "object",
+							"properties": {
+								"product_name":{
+									"type": "string"
+								},
+								"product_type_code":{
+									"type": "string"
+								},
+								"apply_eol":{
+									"type": "boolean"
+								},
+								"apply_ius":{
+									"type": "boolean"
+								}
+							},
+							"xml": {
+								"name": "updateProductCommProduct"
+							}
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "'Peticion invalida' o 'Ingrese un UUID valido' o 'Suscripcion no encontrada'."
+					},
+					"404": {
+						"description": "Error."
+					},
+					"200": {
+						"description": "Retorna el registro actualizado."
+					}
+				}
+			}
+		},
+		"/updateProductScopeCommProduct/{product_scope_id}?": {
+			"put": {
+				"tags": [
+					"Products"
+				],
+				"summary": "Modificar Product Scope ",
+				"description": "Modificar Product Scope ",
+				"operationId": "updateProductScopeCommProduct",
+				"produces": [
+					"application/xml",
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "product_scope_id",
+						"in": "path",
+						"description": "UUID del product_scope que se desea actualizar.",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "body",
+						"description": "Modificar una suscripcion.",
+						"required": true,
+						"schema": {
+							"type": "object",
+							"properties": {
+								"product_id":{
+									"type": "string",
+									"format": "UUID"
+								},
+								"product_max_access_count":{
+									"type": "integer"
+								},
+								"product_max_user_count":{
+									"type": "integer"
+								},
+								"scope_start_date":{
+									"type": "string"
+								},
+								"scope_finish_date":{
+									"type": "string"
+								},
+								"is_active":{
+									"type": "boolean"
+								}
+							},
+							"xml": {
+								"name": "updateProductScopeCommProduct"
+							}
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "'Peticion invalida' o 'Ingrese un UUID valido' o 'Suscripcion no encontrada'."
+					},
+					"404": {
+						"description": "Error."
+					},
+					"200": {
+						"description": "Retorna el registro actualizado."
+					}
+				}
+			}
+		}
+    }
+}

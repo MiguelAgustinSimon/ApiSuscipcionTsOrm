@@ -13,6 +13,7 @@ var moment = require('moment');
 
 export default class ProductService {
     
+    //---------------------------------------------------------METODOS GET--------------------------------------------------------------
     getProducts=async(unProductID:any,page:any,size:any)=>{
         return await Product.find({
             where: { 
@@ -171,20 +172,6 @@ export default class ProductService {
             return datos;
     }
 
-    addSubscriptionCommProduct=async(subscriber_id:any,product_id:any,validaStartDate:any,validaFinishDate:any,account_executive_ref_id:any,fechaHoy:any,email:any)=>{
-        const ps=new Product_Subscription();
-        ps.subscriber_id=subscriber_id,
-        ps.product_id=product_id,   
-        ps.subscription_start_date=validaStartDate,
-        ps.subscription_finish_date=validaFinishDate,
-        ps.is_active=true,//true
-        ps.account_executive_ref_id=account_executive_ref_id,
-        ps.creation_date=fechaHoy,// yyyy-mm-dd
-        ps.creation_user=email
-        await ps.save();
-        return ps;
-    }
-
     verificarExistenciaProductType=async (product_type_code:any)=> {
         //Verificamos si la relacion ya existe
         let datos:any;
@@ -201,19 +188,6 @@ export default class ProductService {
         });
         return datos;
     }
-
-    createProductCommProduct=async(product_code:any,product_name:any,product_type_id:any,apply_eol:any,apply_ius:any)=>{
-        const producto=new Product();
-        producto.product_code=product_code,
-        producto.product_name=product_name,   
-        producto.product_type_id=product_type_id,
-        producto.apply_eol=apply_eol,
-        producto.apply_ius=apply_ius
-
-        await producto.save();
-        return producto;
-    }
-
     verificarExistenciaProductScope=async (product_id:any)=> {
         //Verificamos si la relacion ya existe
         let existe=false;
@@ -233,6 +207,49 @@ export default class ProductService {
         });
         return existe;
     }
+    traerProductScope=async (product_scope_id:any)=> {
+        //Verificamos si la relacion ya existe
+        let datos:any;
+
+        await Product_Scope.findOne({
+            where:{product_scope_id: product_scope_id}
+        }).then( (data:any)=>{
+            if(data){
+                datos=data;
+            }
+        })
+        .catch( (error)=>{
+            console.log(`error: ${error}`);
+        });
+        return datos;
+    }
+    //---------------------------------------------------------METODOS POST--------------------------------------------------------------
+
+    addSubscriptionCommProduct=async(subscriber_id:any,product_id:any,validaStartDate:any,validaFinishDate:any,account_executive_ref_id:any,fechaHoy:any,email:any)=>{
+        const ps=new Product_Subscription();
+        ps.subscriber_id=subscriber_id,
+        ps.product_id=product_id,   
+        ps.subscription_start_date=validaStartDate,
+        ps.subscription_finish_date=validaFinishDate,
+        ps.is_active=true,//true
+        ps.account_executive_ref_id=account_executive_ref_id,
+        ps.creation_date=fechaHoy,// yyyy-mm-dd
+        ps.creation_user=email
+        await ps.save();
+        return ps;
+    }
+
+    createProductCommProduct=async(product_code:any,product_name:any,product_type_id:any,apply_eol:any,apply_ius:any)=>{
+        const producto=new Product();
+        producto.product_code=product_code,
+        producto.product_name=product_name,   
+        producto.product_type_id=product_type_id,
+        producto.apply_eol=apply_eol,
+        producto.apply_ius=apply_ius
+
+        await producto.save();
+        return producto;
+    }
 
     createProductScopeCommProduct=async(product_id:any,product_max_access_count:any,product_max_user_count:any,scope_finish_date:any)=>{
         let fechaHoy= moment();
@@ -249,6 +266,8 @@ export default class ProductService {
         return prodScope;
     }
 
+    //---------------------------------------------------------METODOS PUT--------------------------------------------------------------
+
     disableSubscriptionCommProduct=async(product_subscription_id:any,email:any)=>{
         let fechaHoy= moment();
 
@@ -261,19 +280,33 @@ export default class ProductService {
         return disable;
     }
 
-    updateProductCommProduct=async(product_code:any,product_name:any,product_type_id:any,apply_eol:any,apply_ius:any)=>{
+    updateProductCommProduct=async(product_id:any,productObtenido:Product,product_type_id:any)=>{
         let fechaHoy= moment();
 
         const modeloProducto=new Product();
-        modeloProducto.product_code=product_code,
-        modeloProducto.product_name=product_name,
+        modeloProducto.product_code=productObtenido.product_code,
+        modeloProducto.product_name=productObtenido.product_name,
         modeloProducto.product_type_id=product_type_id,
-        modeloProducto.apply_eol=apply_eol,
-        modeloProducto.apply_ius=apply_ius,
+        modeloProducto.apply_eol=productObtenido.apply_eol,
+        modeloProducto.apply_ius=productObtenido.apply_ius,
         modeloProducto.modification_date=fechaHoy;
+        let p:any=await Product.update({product_id:product_id},modeloProducto)
 
-        let p:any=await Product.update({product_id:modeloProducto.product_id},modeloProducto)
+        return p;
+    }
 
+    updateProductScopeCommProduct=async(product_scope_id:any,scopeObtenido:Product_Scope,validaStartDate:any,validaFinishDate:any)=>{
+        let fechaHoy= moment();
+
+        const scope=new Product_Scope();
+        scope.product_id=scopeObtenido.product_id,
+        scope.product_max_access_count=scopeObtenido.product_max_access_count,   
+        scope.product_max_user_count=scopeObtenido.product_max_user_count,
+        scope.scope_start_date=validaStartDate,
+        scope.scope_finish_date=validaFinishDate,
+        scope.is_active=scopeObtenido.is_active,
+        scope.modification_date=fechaHoy   
+        let p:any=await Product_Scope.update({product_scope_id: product_scope_id},scope)
         return p;
     }
 

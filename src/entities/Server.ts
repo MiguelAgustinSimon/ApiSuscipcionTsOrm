@@ -45,13 +45,14 @@ class Server {
       // CORS
       this.app.use(morgan('dev'));
       this.app.use(cors());
+      let router = express.Router();
       
       //SWAGGER
-      // const swaggerUi = require('swagger-ui-express');
-      // const swaggerDocument = require('./swagger.json');
-      // router.use('/api-docs', swaggerUi.serve);
-      // router.get('/api-docs', swaggerUi.setup(swaggerDocument));
-      let router = express.Router();
+      const swaggerUi = require('swagger-ui-express');
+      const swaggerDocument = require('./swagger.json');
+      router.use('/api-docs', swaggerUi.serve);
+      router.get('/api-docs', swaggerUi.setup(swaggerDocument));
+      
       this.app.use("/", router);
 
       //Body lecture

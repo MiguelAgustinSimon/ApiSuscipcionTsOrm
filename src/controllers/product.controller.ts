@@ -556,7 +556,6 @@ const disableSubscriptionCommProduct = async (req:Request,res:Response) => {
 
         const existeSuscripcion:Product_Subscription= await _productService.verificarExistenciaSuscripcion(subscriber_id,product_id);
         if(existeSuscripcion){
-
             let psUpdate= await _productService.disableSubscriptionCommProduct(existeSuscripcion.product_subscription_id,req2.idpData.email);
             
             if(psUpdate){
@@ -631,14 +630,14 @@ const updateProductCommProduct = async (req:Request,res:Response) => {
             throw new BaseException(`product type code inexistente`,400,"ProductScope: updateProductCommProduct");
         }
         
-        let prodEditado=await _productService.updateProductCommProduct(product_code,product_name,_productType.product_type_id,apply_eol,apply_ius);
+        let prodEditado=await _productService.updateProductCommProduct(_product.product_id,req.body,_productType.product_type_id);
         if(prodEditado){
-            const _productId= await _productService.consultarExistenciaProducto(product_id);
-            if(_productId){
+            let _productObtenido = await _productService.obtenerProducto(where);
+            if(_productObtenido){
                 return res.status(201).json({
                     //ok:true,
                     message:'Producto actualizado exitosamente',
-                    result:_productId
+                    result:_productObtenido
                 });
             }else{
                 logger.warn(`ProductScope: updateProductCommProduct: La suscripcion no pudo ser modificada`);
@@ -661,98 +660,71 @@ const updateProductCommProduct = async (req:Request,res:Response) => {
 
 //Modificar Product Scope 
 const updateProductScopeCommProduct = async (req:Request,res:Response) => {
-    const {product_scope_id}=req.params;
-    let fechaHoy= moment();
-    const {
-        product_id,
-        product_max_access_count,
-        product_max_user_count,
-        scope_start_date,
-        scope_finish_date,
-        is_active
-    } = req.body;
+    try{
+        const {product_scope_id}=req.params;
+        let fechaHoy= moment();
+        const {
+            product_id,
+            product_max_access_count,
+            product_max_user_count,
+            scope_start_date,
+            scope_finish_date,
+            is_active
+        } = req.body;
 
-    if(!product_scope_id){
-        logger.warn(`updateProductScopeCommProduct: No se ingreso el product_scope_id`);
-        return res.status(400).json({message: "No se ingreso el product_scope_id."})
-    }
-    if(!UUIDChecker(product_scope_id)){
-        logger.warn(`ProductScope: updateProductScopeCommProduct: Ingrese un UUID valido: ${product_scope_id}`);
-        return res.status(400).json({message: 'Ingrese un UUID valido'});
-    }
- 
-    var validaStartDate = moment(scope_start_date);
-    var validaFinishDate = moment(scope_finish_date);
-    if(!validaStartDate.isValid() || validaStartDate>=fechaHoy){
-        logger.warn(`updateProductScopeCommProduct: Fecha de inicio invalida`);
-        return res.status(400).json({message: "Fecha de inicio invalida"})
-    }
-    if(!validaFinishDate.isValid() || validaFinishDate<=fechaHoy){
-        logger.warn(`updateProductScopeCommProduct: Fecha de finalizacion invalida`);
-        return res.status(400).json({message: "Fecha de finalizacion invalida"})
-    }
+        if(!product_scope_id){
+            logger.warn(`updateProductScopeCommProduct: No se ingreso el product_scope_id`);
+            throw new BaseException(`No se ingreso el product_scope_id`,400,"ProductScope: updateProductScopeCommProduct");
+        }
+        if(!UUIDChecker(product_scope_id)){
+            logger.warn(`ProductScope: updateProductScopeCommProduct: Ingrese un UUID valido: ${product_scope_id}`);
+            throw new BaseException(`Ingrese un UUID valido`,400,"ProductScope: updateProductScopeCommProduct");
+        }
+    
+        var validaStartDate = moment(scope_start_date);
+        var validaFinishDate = moment(scope_finish_date);
+        if(!validaStartDate.isValid() || validaStartDate>=fechaHoy){
+            logger.warn(`updateProductScopeCommProduct: Fecha de inicio invalida`);
+            throw new BaseException(`Fecha de inicio invalida`,400,"ProductScope: updateProductScopeCommProduct");
 
-    if(!is_active){
-        return res.status(400).json({message: "El campo is_active no fue informado"})
-    }
+        }
+        if(!validaFinishDate.isValid() || validaFinishDate<=fechaHoy){
+            logger.warn(`updateProductScopeCommProduct: Fecha de finalizacion invalida`);
+            throw new BaseException(`Fecha de finalizacion invalida`,400,"ProductScope: updateProductScopeCommProduct");
+        }
 
-    await Product_Scope.findOne({
-        where:{product_scope_id: product_scope_id}
-    }).then(async scope=>{
+        if(!is_active){
+            throw new BaseException(`El campo is_active no fue informado`,400,"ProductScope: updateProductScopeCommProduct");
+        }
+
+        let scope:Product_Scope= await _productService.traerProductScope(product_scope_id);
         if(scope){
-            scope.product_id=product_id,
-            scope.product_max_access_count=product_max_access_count,   
-            scope.product_max_user_count=product_max_user_count,
-            scope.scope_start_date=validaFinishDate,
-            scope.scope_finish_date=validaFinishDate,
-            scope.is_active=is_active,
-            scope.modification_date=fechaHoy    
-            await Product_Scope.update({product_scope_id: product_scope_id},scope)
-            .then(async resultado=>{
-                logger.info(`ProductScope: updateProductScopeCommProduct ok`);
-                if(resultado.affected!>0){
-                    const _p = await Product_Scope.findOne({
-                        where:{product_scope_id: scope.product_scope_id}
-                    })
-                    if(_p){
-                        return res.status(201).json({
-                            //ok:true,
-                            message:'Alcance de Producto modificado',
-                            prodScope:_p
-                        });
-                    }
-                }
-                else{
-                    logger.warn(`ProductScope: updateProductScopeCommProduct: El Alcance de este producto no pudo ser modificado`);
-                    return res.status(400).json({
-                        ok:false,
-                        message:'El Alcance de este producto no pudo ser modificado'
-                    })
-                }
-            }).catch(error=>{
-                logger.error(`ProductScope: updateProductScopeCommProduct error: ${error.message}`);
-                return res.status(404).json({
-                    ok:false,
-                    mensaje:error.message,
-                    error:error.message,
+            let scopeEditado:Product_Scope= await _productService.updateProductScopeCommProduct(product_scope_id,req.body,validaStartDate,validaFinishDate);
+            if(scopeEditado){
+                 let scopeObtenido:Product_Scope= await _productService.traerProductScope(product_scope_id);
+
+                return res.status(201).json({
+                    //ok:true,
+                    message:'Alcance de Producto modificado',
+                    result:scopeObtenido
                 });
-            });   
+            }else{
+                logger.warn(`ProductScope: updateProductScopeCommProduct: El Alcance de este producto no pudo ser modificado`);
+                throw new BaseException(`El Alcance de este producto no pudo ser modificado`,400,"ProductScope: updateProductScopeCommProduct");
+            }
         }
         else{
             logger.warn(`ProductScope: updateProductScopeCommProduct: Item no encontrado`);
-            return res.status(400).json({
-                ok:false,
-                message:'Item no encontrado'
-            });
+            throw new BaseException(`Item no encontrado`,400,"ProductScope: updateProductScopeCommProduct");
         }
-    }).catch(error=>{
-        logger.error(`ProductScope: updateProductScopeCommProduct error: ${error.message}`);
+    }catch (error) {
+        logger.error(`ProductScope: updateProductCommProduct error: ${error}`);
         res.status(404).json({
             ok:false,
-            mensaje:"Debe cargar correctamente los campos",
-            error:error.message,
+            mensaje:"Ha ocurrido un error, asegurese de ingresar los campos correspondientes",
+            error
         });
-    }); 
+    }
 } // fin updateProductScopeCommProduct
 
 
