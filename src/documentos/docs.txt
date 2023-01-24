@@ -1,0 +1,12 @@
+
+Autenticador JWT: https://www.youtube.com/watch?v=lV7mxivGX_I&ab_channel=FaztCode
+Buenas prácticas API: https://elbauldelprogramador.com/buenas-practicas-para-el-diseno-de-una-api-restful-pragmatica/
+
+Rest API con TypeORM y Typescript: https://www.youtube.com/watch?v=tGJt93O_DMo&ab_channel=FaztCode
+-----------------------------------------------------DOCKER-----------------------------------------------------
+Instalar Docker en W10: https://www.youtube.com/watch?v=_et7H0EQ8fY&ab_channel=TheCoderCaveesp
+Kernel Linux en W10: https://docs.microsoft.com/en-us/windows/wsl/install-manual
+IMPORTANTE -> Dockerizar NodeApp: https://www.youtube.com/watch?v=iLlmm0L-VpQ&ab_channel=FaztCode
+Comandos:
+1) Crear imagen Docker: " docker build -t node-apisuscripciones . "
+2) Levantar Imagen Docker: " docker run -it -p 4000:3001 node-apisuscripciones "
