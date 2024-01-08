@@ -7,16 +7,6 @@ import { Product_Scope } from "../entities/Product_Scope";
 require("dotenv").config({path:"./.env"});
 
 export const AppDataSource = new DataSource({
-    // type: "postgres",
-    // host: "syserrepar-pg-devqa-db-01.chbngkghfvhl.us-east-2.rds.amazonaws.com",
-    // port: 5432,
-    // username: "dev_user",
-    // password: "dev",
-    // database: "pg_dev_01",
-    // schema:"comm_prod",
-    // synchronize: false,
-    // logging: true,
-    // entities: [Product,Subscriber,Product_Type,Product_Subscription,Product_Scope]
     type: "postgres",
     host:  process.env.POSTGRESQL_HOST,
     port: 5432,
